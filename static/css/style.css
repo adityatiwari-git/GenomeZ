@@ -399,3 +399,195 @@ h1,h2,h3,h4,h5,h6{
 
 }
 
+/* ===========================
+   WHY GENOMEZ
+=========================== */
+
+.why-section{
+
+    padding:100px 0;
+
+    background:white;
+
+}
+
+.why-image{
+
+    width:100%;
+    border-radius:20px;
+    box-shadow:0 20px 40px rgba(37,99,235,.12);
+
+}
+
+.why-section h2{
+
+    font-size:42px;
+    font-weight:700;
+    color:#1F2937;
+
+}
+
+.why-section p{
+
+    color:#6B7280;
+    font-size:18px;
+    line-height:1.8;
+
+}
+
+.why-list{
+
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+
+}
+
+.why-list div{
+
+    font-size:17px;
+    font-weight:500;
+
+}
+
+.why-list i{
+
+    color:#10B981;
+    margin-right:10px;
+
+}
+
+
+/* ===========================
+CONTACT
+===========================*/
+
+.contact-section{
+
+    padding:100px 0;
+
+    background:#F8FAFC;
+
+}
+
+.contact-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:60px;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.06);
+
+}
+
+.contact-icon{
+
+    font-size:42px;
+
+    color:#2563EB;
+
+    margin-bottom:20px;
+
+}
+
+.contact-card h5{
+
+    margin-top:15px;
+
+    font-weight:600;
+
+}
+
+.contact-card p{
+
+    color:#6B7280;
+
+}
+
+/* ===========================
+FOOTER
+===========================*/
+
+.footer{
+
+    background:#111827;
+
+    color:white;
+
+    padding:80px 0 30px;
+
+}
+
+.footer-logo{
+
+    font-size:34px;
+
+    font-weight:700;
+
+}
+
+.footer-logo span{
+
+    color:#10B981;
+
+}
+
+.footer p{
+
+    color:#CBD5E1;
+
+    line-height:1.8;
+
+}
+
+.footer h5{
+
+    margin-bottom:20px;
+
+}
+
+.footer ul{
+
+    list-style:none;
+
+    padding:0;
+
+}
+
+.footer li{
+
+    margin-bottom:12px;
+
+    color:#CBD5E1;
+
+}
+
+.footer a{
+
+    color:#CBD5E1;
+
+    text-decoration:none;
+
+}
+
+.footer a:hover{
+
+    color:white;
+
+}
+
+.footer hr{
+
+    border-color:#374151;
+
+    margin:50px 0 25px;
+
+}
+
+.footer-copy{
+
+    color:#94A3B8;
+
+}
