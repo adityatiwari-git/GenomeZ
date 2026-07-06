@@ -1,69 +1,77 @@
 import re
 
-VALID_DNA = {"A", "T", "G", "C"}
+DNA_BASES = {"A", "T", "G", "C"}
+RNA_BASES = {"A", "U", "G", "C"}
+VALID_BASES = {"A", "T", "G", "C", "U"}
 
 
-def validate_dna(sequence):
+def validate_sequence(sequence):
     """
-    Validate a DNA sequence and return useful statistics.
-
-    Returns:
-        {
-            "valid": bool,
-            "sequence": str,
-            "length": int,
-            "counts": dict,
-            "gc_percent": float,
-            "at_percent": float,
-            "type": str,
-            "invalid": list,
-            "message": str
-        }
+    Validate and identify whether the sequence is DNA or RNA.
     """
 
-    # Empty input
     if not sequence:
         return {
             "valid": False,
             "message": "Sequence is empty."
         }
 
-    # Remove spaces, tabs and newlines
+    # Remove spaces and newlines
     sequence = re.sub(r"\s+", "", sequence.upper())
 
     # Find invalid characters
-    invalid = sorted(set([char for char in sequence if char not in VALID_DNA]))
+    invalid = sorted(set(ch for ch in sequence if ch not in VALID_BASES))
 
     if invalid:
         return {
             "valid": False,
             "sequence": sequence,
-            "invalid": invalid,
-            "message": "Invalid DNA sequence."
+            "message": "Invalid sequence.",
+            "invalid": invalid
         }
 
-    # Base counts
+    has_t = "T" in sequence
+    has_u = "U" in sequence
+
+    # DNA and RNA mixed together
+    if has_t and has_u:
+        return {
+            "valid": False,
+            "sequence": sequence,
+            "message": "Sequence contains both T and U. Mixed DNA/RNA sequences are not supported."
+        }
+
+    sequence_type = "DNA" if has_t else "RNA"
+
     counts = {
         "A": sequence.count("A"),
         "T": sequence.count("T"),
         "G": sequence.count("G"),
         "C": sequence.count("C"),
+        "U": sequence.count("U"),
     }
 
     length = len(sequence)
 
     gc = counts["G"] + counts["C"]
-    at = counts["A"] + counts["T"]
+
+    if sequence_type == "DNA":
+        other = counts["A"] + counts["T"]
+        other_name = "AT"
+    else:
+        other = counts["A"] + counts["U"]
+        other_name = "AU"
 
     gc_percent = round((gc / length) * 100, 2)
-    at_percent = round((at / length) * 100, 2)
+    other_percent = round((other / length) * 100, 2)
 
     return {
         "valid": True,
         "sequence": sequence,
+        "type": sequence_type,
         "length": length,
         "counts": counts,
         "gc_percent": gc_percent,
-        "at_percent": at_percent,
-        "type": "DNA",
+        "other_percent": other_percent,
+        "other_name": other_name,
     }

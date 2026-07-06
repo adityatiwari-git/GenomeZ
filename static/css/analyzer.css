@@ -1,85 +1,15 @@
 /* ===========================
-   ANALYZER LAYOUT
+   MAIN LAYOUT
 =========================== */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body.app-body{
-    background:#F4F7FB;
-    font-family:'Poppins',sans-serif;
-}
 
 .analyzer-container{
-    display:flex;
-    min-height:calc(100vh - 72px);
+    width:100%;
+    min-height:100vh;
+    background:#F8FAFC;
 }
 
-/* ===========================
-   SIDEBAR
-=========================== */
-
-.sidebar{
-    width:290px;
-    background:#0F172A;
-    color:white;
-    padding:30px 20px;
-    overflow-y:auto;
-}
-
-.sidebar-title{
-    margin-bottom:35px;
-}
-
-.sidebar-title h4{
-    font-weight:700;
-    margin:0;
-}
-
-.menu h6{
-    color:#94A3B8;
-    font-size:13px;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    margin:30px 0 15px;
-}
-
-.menu a{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    color:#CBD5E1;
-    text-decoration:none;
-    padding:12px 15px;
-    border-radius:12px;
-    margin-bottom:8px;
-    transition:.25s;
-}
-
-.menu a:hover{
-    background:#1E293B;
-    color:white;
-}
-
-.menu a.active{
-    background:#2563EB;
-    color:white;
-}
-
-.menu hr{
-    border-color:#334155;
-    margin:20px 0;
-}
-
-/* ===========================
-   WORKSPACE
-=========================== */
-
-.workspace{
-    flex:1;
+.full-workspace{
+    width:100%;
     padding:40px;
 }
 
@@ -87,43 +17,23 @@ body.app-body{
     margin-bottom:30px;
 }
 
-.workspace-header h2{
-    font-size:34px;
-    font-weight:700;
-    color:#1F2937;
-}
-
-.workspace-header p{
-    color:#6B7280;
-    margin-top:10px;
-}
-
 .workspace-body{
-    background:white;
+    width:100%;
+}
+
+.upload-panel{
+    background:#fff;
     border-radius:20px;
-    min-height:650px;
-    box-shadow:0 10px 30px rgba(0,0,0,.06);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    padding:35px;
+    border:1px solid #E5E7EB;
 }
 
-.empty-state{
-    text-align:center;
-}
-
-.empty-state i{
-    font-size:90px;
-    color:#10B981;
-}
-
-.empty-state h3{
-    margin-top:20px;
-    font-weight:600;
-}
-
-.empty-state p{
-    color:#6B7280;
+.sequence-box{
+    width:100%;
+    min-height:260px;
+    resize:vertical;
+    font-family:monospace;
+    font-size:15px;
 }
 
 /* ===========================
@@ -401,5 +311,108 @@ body.app-body{
 .analysis-grid input{
 
     margin-right:10px;
+
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+    margin-top:30px;
+}
+
+@media(max-width:992px){
+
+.info-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+}
+
+/* ===========================
+   RESULTS PANEL
+=========================== */
+
+.results-card{
+
+    margin-top:35px;
+    background:#ffffff;
+    border-radius:20px;
+    padding:30px;
+    border:1px solid #E5E7EB;
+
+}
+
+.results-header{
+
+    margin-bottom:25px;
+
+}
+
+.results-header h3{
+
+    font-weight:700;
+
+}
+
+.results-header p{
+
+    color:#64748B;
+
+    margin-top:6px;
+
+}
+
+.result-item{
+
+    margin-bottom:30px;
+    border:1px solid #E5E7EB;
+    border-radius:16px;
+    overflow:hidden;
+
+}
+
+.result-title{
+
+    background:#2563EB;
+    color:white;
+    padding:15px 20px;
+
+}
+
+.result-title h5{
+
+    margin:0;
+    font-weight:600;
+
+}
+
+.result-body{
+
+    padding:25px;
+    background:#F8FAFC;
+
+}
+
+.result-sequence{
+
+    margin:0;
+    white-space:pre-wrap;
+    word-break:break-word;
+    font-family:Consolas, monospace;
+    font-size:15px;
+    line-height:1.7;
+
+}
+
+.result-actions{
+
+    display:flex;
+    gap:12px;
+    padding:20px;
+    background:white;
+    border-top:1px solid #E5E7EB;
 
 }

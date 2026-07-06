@@ -6,335 +6,556 @@
 
 <div class="analyzer-container">
 
-    <!-- Sidebar -->
+    <main class="workspace full-workspace">
 
-    <aside class="sidebar">
-
-        <div class="sidebar-title">
-
-            <h4>GenomeZ</h4>
-
-        </div>
-
-        <div class="menu">
-
-            <h6>Main</h6>
-
-            <a href="#" class="active">
-                <i class="bi bi-speedometer2"></i>
-                Dashboard
-            </a>
-
-            <h6>Analysis</h6>
-
-            <a href="#"><i class="bi bi-arrow-repeat"></i> DNA → RNA</a>
-
-            <a href="#"><i class="bi bi-arrow-left-right"></i> RNA → DNA</a>
-
-            <a href="#"><i class="bi bi-pie-chart"></i> GC Content</a>
-
-            <a href="#"><i class="bi bi-123"></i> ATGC Count</a>
-
-            <a href="#"><i class="bi bi-intersect"></i> Complement</a>
-
-            <a href="#"><i class="bi bi-arrow-counterclockwise"></i> Reverse Complement</a>
-
-            <a href="#"><i class="bi bi-cpu"></i> Protein Translation</a>
-
-            <a href="#"><i class="bi bi-search"></i> Motif Finder</a>
-
-            <a href="#"><i class="bi bi-diagram-3"></i> ORF Finder</a>
-
-            <hr>
-
-            <a href="#"><i class="bi bi-clock-history"></i> History</a>
-
-            <a href="#"><i class="bi bi-gear"></i> Settings</a>
-
-        </div>
-
-    </aside>
-
-    <!-- Workspace -->
-
-    <main class="workspace">
+        <!-- ===========================
+             HEADER
+        ============================ -->
 
         <div class="workspace-header">
 
             <h2>GenomeZ Analyzer</h2>
 
             <p>
-                Upload a DNA sequence or FASTA file to begin.
+                Upload a DNA or RNA sequence and choose the analyses you want to perform.
             </p>
 
         </div>
 
-        <div class="workspace-body">
-
-    <div class="upload-panel">
-
-        <h3>Upload DNA Sequence</h3>
-
-        <p>
-            Paste your DNA sequence or upload a FASTA/TXT file.
-        </p>
+        <!-- ===========================
+             MAIN FORM
+        ============================ -->
 
         <form method="POST">
 
-    {% csrf_token %}
+            {% csrf_token %}
 
-            <textarea
-    class="form-control sequence-box"
-    rows="10"
-    name="sequence"
-    placeholder="Paste your DNA sequence here..."
-></textarea>
+            <!-- ===========================
+                 UPLOAD PANEL
+            ============================ -->
 
-            <div class="upload-buttons">
+            <div class="upload-panel">
 
-                <label class="btn btn-outline-primary">
+                <div class="d-flex justify-content-between align-items-center mb-4">
 
-                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    <div>
 
-                    Upload FASTA
+                        <h3>Upload Sequence</h3>
 
-                    <input type="file" hidden>
+                        <p class="mb-0">
 
-                </label>
+                            Supported formats:
+                            Raw DNA,
+                            Raw RNA,
+                            FASTA,
+                            TXT
 
-                <label class="btn btn-outline-success">
+                        </p>
 
-                    <i class="bi bi-file-earmark-text"></i>
+                    </div>
 
-                    Upload TXT
+                </div>
 
-                    <input type="file" hidden>
+                <textarea
+                    class="form-control sequence-box"
+                    name="sequence"
+                    rows="8"
+                    placeholder="Paste your DNA or RNA sequence here...">{{ result.sequence|default:'' }}</textarea>
 
-                </label>
+                <div class="upload-buttons mt-4">
+
+                    <label class="btn btn-outline-primary">
+
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+
+                        Upload FASTA
+
+                        <input
+                            type="file"
+                            hidden>
+
+                    </label>
+
+                    <label class="btn btn-outline-success">
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                        Upload TXT
+
+                        <input
+                            type="file"
+                            hidden>
+
+                    </label>
+
+                </div>
 
             </div>
 
-            <div class="text-end mt-4">
+            <!-- ===========================
+                 ANALYSIS PANEL
+            ============================ -->
 
-                <button
-                    type="submit"
-                    class="btn btn-primary btn-lg">
+            <div class="analysis-card mt-4">
 
-                    Validate Sequence
+                <h4>
 
-                </button>
+                    <i class="bi bi-cpu"></i>
 
-                {% if result.valid %}
+                    Select Analyses
 
-<div class="summary-card">
+                </h4>
 
-    <div class="summary-header">
+                <div class="analysis-grid">
 
-        <h4>
-            <i class="bi bi-check-circle-fill"></i>
-            Sequence Summary
-        </h4>
+                    <label>
 
-    </div>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="dna_to_rna">
 
-    <div class="summary-grid">
+                        DNA → RNA
 
-        <div class="summary-item">
-            <span>Status</span>
-            <strong class="text-success">Valid DNA</strong>
-        </div>
+                    </label>
 
-        <div class="summary-item">
-            <span>Length</span>
-            <strong>{{ result.length }} bp</strong>
-        </div>
+                    <label>
 
-        <div class="summary-item">
-            <span>Sequence Type</span>
-            <strong>{{ result.type }}</strong>
-        </div>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="rna_to_dna">
 
-        <div class="summary-item">
-            <span>GC Content</span>
-            <strong>{{ result.gc_percent }}%</strong>
-        </div>
+                        RNA → DNA
 
-        <div class="summary-item">
-            <span>AT Content</span>
-            <strong>{{ result.at_percent }}%</strong>
-        </div>
+                    </label>
 
-    </div>
+                    <label>
 
-    <hr>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="gc_content">
 
-    <h5 class="mb-4">Base Composition</h5>
+                        GC Content
 
-    <div class="base-grid">
+                    </label>
 
-        <div class="base-box">
-            <h3>A</h3>
-            <span>{{ result.counts.A }}</span>
-        </div>
+                    <label>
 
-        <div class="base-box">
-            <h3>T</h3>
-            <span>{{ result.counts.T }}</span>
-        </div>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="atgc_count">
 
-        <div class="base-box">
-            <h3>G</h3>
-            <span>{{ result.counts.G }}</span>
-        </div>
+                        Base Count
 
-        <div class="base-box">
-            <h3>C</h3>
-            <span>{{ result.counts.C }}</span>
-        </div>
+                    </label>
 
-    </div>
+                    <label>
 
-</div>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="complement">
 
-{% if result.valid %}
+                        Complement
 
-<div class="quality-card">
+                    </label>
 
-    <h4>
-        <i class="bi bi-shield-check"></i>
-        Sequence Quality
-    </h4>
+                    <label>
 
-    <div class="quality-list">
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="reverse_complement">
 
-        <div class="quality-item success">
-            ✔ Contains only A, T, G and C
-        </div>
+                        Reverse Complement
 
-        <div class="quality-item success">
-            ✔ No invalid characters detected
-        </div>
+                    </label>
 
-        <div class="quality-item success">
-            ✔ Converted to uppercase
-        </div>
+                    <label>
 
-        <div class="quality-item success">
-            ✔ Ready for downstream analysis
-        </div>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="translation">
 
-    </div>
+                        Protein Translation
 
-</div>
+                    </label>
 
-{% if result.valid %}
+                    <label>
 
-<div class="analysis-card">
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="motif">
 
-    <h4>
-        <i class="bi bi-cpu"></i>
-        Select Analysis
-    </h4>
+                        Motif Finder
 
-    <form>
+                    </label>
 
-        <div class="analysis-grid">
+                    <label>
 
-            <label>
-                <input type="checkbox">
-                DNA → RNA
-            </label>
+                        <input
+                            type="checkbox"
+                            name="analysis"
+                            value="orf">
 
-            <label>
-                <input type="checkbox">
-                RNA → DNA
-            </label>
+                        ORF Finder
 
-            <label>
-                <input type="checkbox">
-                GC Content
-            </label>
+                    </label>
 
-            <label>
-                <input type="checkbox">
-                ATGC Count
-            </label>
+                </div>
 
-            <label>
-                <input type="checkbox">
-                Complement
-            </label>
+                <div class="text-end mt-4">
 
-            <label>
-                <input type="checkbox">
-                Reverse Complement
-            </label>
+                    <button
+                        class="btn btn-primary btn-lg"
+                        type="submit">
 
-            <label>
-                <input type="checkbox">
-                Protein Translation
-            </label>
+                        Run Analysis
 
-            <label>
-                <input type="checkbox">
-                Motif Finder
-            </label>
+                    </button>
 
-            <label>
-                <input type="checkbox">
-                ORF Finder
-            </label>
-
-        </div>
-
-        <button class="btn btn-primary btn-lg mt-4">
-
-            Run Analysis
-
-        </button>
-
-    </form>
-
-</div>
-
-{% endif %}
-
-{% endif %}
-
-{% elif result %}
-
-<div class="alert alert-danger mt-4">
-
-    <h5>Invalid DNA Sequence</h5>
-
-    {% if result.message %}
-        <p>{{ result.message }}</p>
-    {% endif %}
-
-    {% if result.invalid %}
-        <p>Invalid Characters:</p>
-
-        <strong>
-
-        {% for c in result.invalid %}
-            {{ c }}
-        {% endfor %}
-
-        </strong>
-
-    {% endif %}
-
-</div>
-
-{% endif %}
+                </div>
 
             </div>
 
-        </form>
+                        <!-- ===========================
+                 VALID RESULT
+            ============================ -->
 
-    </div>
+            {% if result.valid %}
 
-</div>
+            <div class="info-grid">
+
+                <!-- ===========================
+                     SEQUENCE SUMMARY
+                ============================ -->
+
+                <div class="summary-card">
+
+                    <div class="summary-header">
+
+                        <h4>
+
+                            <i class="bi bi-check-circle-fill"></i>
+
+                            Sequence Summary
+
+                        </h4>
+
+                    </div>
+
+                    <div class="summary-grid">
+
+                        <div class="summary-item">
+
+                            <span>Status</span>
+
+                            <strong class="text-success">
+
+                                Valid {{ result.type }}
+
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>Sequence Type</span>
+
+                            <strong>
+
+                                {{ result.type }}
+
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>Length</span>
+
+                            <strong>
+
+                                {{ result.length }} bp
+
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>GC Content</span>
+
+                            <strong>
+
+                                {{ result.gc_percent }}%
+
+                            </strong>
+
+                        </div>
+
+                        <div class="summary-item">
+
+                            <span>{{ result.other_name }} Content</span>
+
+                            <strong>
+
+                                {{ result.other_percent }}%
+
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                    <hr>
+
+                    <h5 class="mb-4">
+
+                        Base Composition
+
+                    </h5>
+
+                    <div class="base-grid">
+
+                        <div class="base-box">
+
+                            <h3>A</h3>
+
+                            <span>
+
+                                {{ result.counts.A }}
+
+                            </span>
+
+                        </div>
+
+                        {% if result.type == "DNA" %}
+
+                        <div class="base-box">
+
+                            <h3>T</h3>
+
+                            <span>
+
+                                {{ result.counts.T }}
+
+                            </span>
+
+                        </div>
+
+                        {% else %}
+
+                        <div class="base-box">
+
+                            <h3>U</h3>
+
+                            <span>
+
+                                {{ result.counts.U }}
+
+                            </span>
+
+                        </div>
+
+                        {% endif %}
+
+                        <div class="base-box">
+
+                            <h3>G</h3>
+
+                            <span>
+
+                                {{ result.counts.G }}
+
+                            </span>
+
+                        </div>
+
+                        <div class="base-box">
+
+                            <h3>C</h3>
+
+                            <span>
+
+                                {{ result.counts.C }}
+
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- ===========================
+                     QUALITY CARD
+                ============================ -->
+
+                <div class="quality-card">
+
+                    <h4>
+
+                        <i class="bi bi-shield-check"></i>
+
+                        Sequence Quality
+
+                    </h4>
+
+                    <div class="quality-list">
+
+                        <div class="quality-item">
+
+                            ✅ Valid {{ result.type }} sequence
+
+                        </div>
+
+                        <div class="quality-item">
+
+                            ✅ Contains only valid nucleotide bases
+
+                        </div>
+
+                        <div class="quality-item">
+
+                            ✅ Sequence normalized to uppercase
+
+                        </div>
+
+                        <div class="quality-item">
+
+                            ✅ Ready for downstream analysis
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% elif result %}
+
+            <!-- ===========================
+                 INVALID RESULT
+            ============================ -->
+
+            <div class="alert alert-danger mt-4">
+
+                <h4>
+
+                    Invalid Sequence
+
+                </h4>
+
+                <p>
+
+                    {{ result.message }}
+
+                </p>
+
+                {% if result.invalid %}
+
+                <strong>
+
+                    Invalid Characters:
+
+                </strong>
+
+                <br>
+
+                {% for char in result.invalid %}
+
+                    {{ char }}
+
+                {% endfor %}
+
+                {% endif %}
+
+            </div>
+
+            {% endif %}
+
+                        <!-- ===========================
+                 ANALYSIS RESULTS
+            ============================ -->
+
+            {% if analysis_results %}
+
+            <div class="results-card">
+
+                <div class="results-header">
+
+                    <h3>
+
+                        <i class="bi bi-bar-chart-fill"></i>
+
+                        Analysis Results
+
+                    </h3>
+
+                    <p>
+
+                        Generated from the uploaded {{ result.type }} sequence.
+
+                    </p>
+
+                </div>
+
+                {% for title, value in analysis_results.items %}
+
+                <div class="result-item">
+
+                    <div class="result-title">
+
+                        <h5>{{ title }}</h5>
+
+                    </div>
+
+                    <div class="result-body">
+
+                        <pre class="result-sequence">{{ value }}</pre>
+
+                    </div>
+
+                    <div class="result-actions">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary btn-sm">
+
+                            <i class="bi bi-clipboard"></i>
+
+                            Copy
+
+                        </button>
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-success btn-sm">
+
+                            <i class="bi bi-download"></i>
+
+                            Download
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            {% endif %}
+
+                    </form>
 
     </main>
 
