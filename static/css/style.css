@@ -301,4 +301,101 @@ h1,h2,h3,h4,h5,h6{
 
 }
 
+/* ===========================
+   HOW IT WORKS
+=========================== */
+
+.how-section{
+
+    padding:100px 0;
+
+    background:#F8FAFC;
+
+}
+
+.step-card{
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    text-align:center;
+
+    position:relative;
+
+    transition:.3s;
+
+    height:100%;
+
+    border:1px solid #E5E7EB;
+
+}
+
+.step-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 40px rgba(0,0,0,.08);
+
+}
+
+.step-number{
+
+    position:absolute;
+
+    top:-18px;
+
+    left:50%;
+
+    transform:translateX(-50%);
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:50%;
+
+    background:#2563EB;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-weight:700;
+
+}
+
+.step-icon{
+
+    font-size:42px;
+
+    color:#10B981;
+
+    margin-top:15px;
+
+    margin-bottom:20px;
+
+}
+
+.step-card h4{
+
+    font-weight:600;
+
+    margin-bottom:15px;
+
+}
+
+.step-card p{
+
+    color:#6B7280;
+
+    line-height:1.7;
+
+}
 
