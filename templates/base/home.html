@@ -1,0 +1,221 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center min-vh-100">
+
+            <!-- Left -->
+
+            <div class="col-lg-6">
+
+                <span class="hero-tag">
+
+                    🧬 Modern Bioinformatics Analysis Platform
+
+                </span>
+
+                <h1 class="hero-title">
+
+                    Analyze DNA Sequences
+
+                    <br>
+
+                    <span>with Precision.</span>
+
+                </h1>
+
+                <p class="hero-text">
+
+                    GenomeZ helps students, researchers and bioinformatics enthusiasts
+                    analyze DNA sequences, detect motifs, translate proteins,
+                    discover ORFs and visualize genomic insights through a modern,
+                    intuitive platform.
+
+                </p>
+
+                <div class="hero-buttons">
+
+                    <a href="#" class="btn btn-primary btn-lg me-3">
+
+                        Start Analysis
+
+                    </a>
+
+                    <a href="#" class="btn btn-outline-success btn-lg">
+
+                        Learn More
+
+                    </a>
+
+                </div>
+
+                <div class="hero-badges mt-5">
+
+                    <span>
+
+                        🔒 Secure
+
+                    </span>
+
+                    <span>
+
+                        ⚡ Fast
+
+                    </span>
+
+                    <span>
+
+                        🎯 Accurate
+
+                    </span>
+
+                </div>
+
+            </div>
+
+            <!-- Right -->
+
+            <div class="col-lg-6 text-center">
+
+                <img src="{% static 'images/hero.png' %}"
+
+                     alt="GenomeZ Hero"
+
+                     class="img-fluid hero-image">
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ===========================
+     FEATURES SECTION
+============================ -->
+
+<section class="features-section">
+
+    <div class="container">
+
+        <div class="section-title text-center">
+
+            <span class="section-tag">
+
+                Powerful Tools
+
+            </span>
+
+            <h2>
+
+                Everything You Need for Sequence Analysis
+
+            </h2>
+
+            <p>
+
+                GenomeZ provides modern bioinformatics tools for DNA and RNA sequence analysis.
+
+            </p>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-arrow-repeat feature-icon"></i>
+
+                    <h4>DNA → RNA</h4>
+
+                    <p>Convert DNA sequences into RNA instantly.</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-search feature-icon"></i>
+
+                    <h4>Motif Finder</h4>
+
+                    <p>Detect important sequence motifs accurately.</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-diagram-3 feature-icon"></i>
+
+                    <h4>ORF Finder</h4>
+
+                    <p>Locate Open Reading Frames with ease.</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-cpu feature-icon"></i>
+
+                    <h4>Protein Translation</h4>
+
+                    <p>Translate DNA into protein sequences.</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-upload feature-icon"></i>
+
+                    <h4>FASTA Upload</h4>
+
+                    <p>Upload FASTA files for instant analysis.</p>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-4 col-md-6">
+
+                <div class="feature-card">
+
+                    <i class="bi bi-download feature-icon"></i>
+
+                    <h4>Reports</h4>
+
+                    <p>Export results in PDF, TXT and FASTA formats.</p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}
