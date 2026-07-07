@@ -3,6 +3,7 @@ from .analysis.rna_to_dna import rna_to_dna
 from .analysis.complement import complement
 from .analysis.reverse_complement import reverse_complement
 from .analysis.gc_content import gc_content
+from .analysis.atgc_count import atgc_count
 
 # Future imports
 # from .analysis.gc_content import gc_content
@@ -45,5 +46,25 @@ def run_selected_analysis(sequence, sequence_type, selected_tools):
             results["GC Content"] = (
                 f"GC:{gc['GC %']}%|"
                 f"Other:{gc['Other%']}%")
-    
+
+        elif tool == "atgc_count":
+            counts = atgc_count(sequence)
+
+            if sequence_type == "DNA":
+
+                results["Base Composition"] = (
+                f"A:{counts['A']}  "
+                f"T:{counts['T']}  "
+                f"G:{counts['G']}  "
+                f"C:{counts['C']}")
+
+            else:
+
+                results["Base Composition"] = (
+                f"A:{counts['A']}  "
+                f"U:{counts['U']}  "
+                f"G:{counts['G']}  "
+                f"C:{counts['C']}")
+        
+        
     return results
