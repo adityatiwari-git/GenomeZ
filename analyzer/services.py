@@ -1,7 +1,8 @@
 from .analysis.dna_to_rna import dna_to_rna
 from .analysis.rna_to_dna import rna_to_dna
-
-
+from .analysis.complement import complement
+from .analysis.reverse_complement import reverse_complement
+from .analysis.gc_content import gc_content
 
 # Future imports
 # from .analysis.gc_content import gc_content
@@ -12,26 +13,37 @@ def run_selected_analysis(sequence, sequence_type, selected_tools):
 
     results = {}
 
-    analysis_map = {
-
-    "dna_to_rna": (
-        "DNA → RNA",
-        dna_to_rna
-    ),
-
-    "rna_to_dna": (
-        "RNA → DNA",
-        rna_to_dna
-    ),
-
-}
-
     for tool in selected_tools:
 
-        if tool in analysis_map:
+        if tool == "dna_to_rna":
 
-            title, function = analysis_map[tool]
+            if sequence_type != "DNA":
+                results["DNA → RNA"] = "❌ Input must be a DNA sequence."
+            else:
+                results["DNA → RNA"] = dna_to_rna(sequence)
 
-            results[title] = function(sequence)
+        elif tool == "rna_to_dna":
 
+            if sequence_type != "RNA":
+                results["RNA → DNA"] = "❌ Input must be an RNA sequence."
+            else:
+                results["RNA → DNA"] = rna_to_dna(sequence)
+
+        elif tool == "complement":
+
+            results["Complement"] = complement(sequence, sequence_type)
+
+        elif tool == "reverse_complement":
+
+            results["Reverse Complement"] = reverse_complement(
+                sequence, sequence_type)
+
+        elif tool == "gc_content":
+
+            gc = gc_content(sequence)
+
+            results["GC Content"] = (
+                f"GC:{gc['GC %']}%|"
+                f"Other:{gc['Other%']}%")
+    
     return results
