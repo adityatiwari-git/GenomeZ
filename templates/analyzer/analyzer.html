@@ -25,8 +25,7 @@
         <!-- ===========================
              MAIN FORM
         ============================ -->
-
-        <form method="POST">
+        <form method="POST" enctype="multipart/form-data">
 
             {% csrf_token %}
 
@@ -60,35 +59,74 @@
                     class="form-control sequence-box"
                     name="sequence"
                     rows="8"
-                    placeholder="Paste your DNA or RNA sequence here...">{{ result.sequence|default:'' }}</textarea>
+                    placeholder="Paste your DNA or RNA sequence here...">{{ uploaded_sequence }}</textarea>
 
-                <div class="upload-buttons mt-4">
+                <div class="mt-3">
 
-                    <label class="btn btn-outline-primary">
+    <label class="form-label fw-semibold">
 
-                        <i class="bi bi-file-earmark-arrow-up"></i>
+        Motif (Optional)
 
-                        Upload FASTA
+    </label>
 
-                        <input
-                            type="file"
-                            hidden>
+    <input
+        type="text"
+        class="form-control"
+        name="motif"
+        placeholder="Example: ATG"
+        value="{{ request.POST.motif }}">
 
-                    </label>
+    <small class="text-muted">
 
-                    <label class="btn btn-outline-success">
+        Used only for Motif Finder.
 
-                        <i class="bi bi-file-earmark-text"></i>
+    </small>
 
-                        Upload TXT
+</div>
 
-                        <input
-                            type="file"
-                            hidden>
+        <div class="upload-buttons mt-4">
 
-                    </label>
+    <label class="btn btn-outline-primary">
 
-                </div>
+        <i class="bi bi-file-earmark-arrow-up"></i>
+
+        Upload FASTA
+
+        <input
+            type="file"
+            name="fasta_file"
+            accept=".fasta,.fa"
+            hidden>
+
+    </label>
+
+    <label class="btn btn-outline-success">
+
+        <i class="bi bi-file-earmark-text"></i>
+
+        Upload TXT
+
+        <input
+            type="file"
+            name="txt_file"
+            accept=".txt"
+            hidden>
+
+    </label>
+
+</div>
+
+<div class="mt-3">
+
+    <div
+        id="selected-file"
+        class="alert alert-info py-2">
+
+        No file selected.
+
+    </div>
+
+</div>           
 
             </div>
 
@@ -212,12 +250,14 @@
                 <div class="text-end mt-4">
 
                     <button
-                        class="btn btn-primary btn-lg"
-                        type="submit">
+    class="btn btn-primary btn-lg px-5"
+    type="submit">
 
-                        Run Analysis
+    <i class="bi bi-play-fill"></i>
 
-                    </button>
+    Run Analysis
+
+</button>
 
                 </div>
 
@@ -489,27 +529,56 @@
 
             <div class="results-card">
 
-                <div class="results-header">
+                <div class="results-header d-flex justify-content-between align-items-center flex-wrap">
 
-                    <h3>
+    <div>
 
-                        <i class="bi bi-bar-chart-fill"></i>
+        <h3>
 
-                        Analysis Results
+            <i class="bi bi-bar-chart-fill"></i>
 
-                    </h3>
+            Analysis Results
 
-                    <p>
+        </h3>
 
-                        Generated from the uploaded {{ result.type }} sequence.
+        <p>
 
-                    </p>
+            Generated from the analyzed {{ result.type }} sequence.
 
-                </div>
+        </p>
+
+    </div>
+
+    <div class="d-flex gap-2">
+
+        <button
+            type="button"
+            class="btn btn-outline-primary"
+            onclick="copyAllResults()">
+
+            <i class="bi bi-clipboard-check"></i>
+
+            Copy All
+
+        </button>
+
+        <a
+            href="{% url 'download_report' %}"
+            class="btn btn-success">
+
+            <i class="bi bi-download"></i>
+
+            Download Full Report
+
+        </a>
+
+    </div>
+
+</div>
 
                 {% for title, value in analysis_results.items %}
 
-                <div class="result-item">
+                <div class="result-item" id="result{{ forloop.counter }}">
 
                     <div class="result-title">
 
@@ -519,33 +588,43 @@
 
                     <div class="result-body">
 
-                        <pre class="result-sequence">{{ value }}</pre>
+                        <pre class="result-sequence">{{ value.display }}</pre>
 
                     </div>
 
                     <div class="result-actions">
 
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary btn-sm">
+                            <button
+                                type="button"
+                                class="btn btn-outline-primary btn-sm">
 
-                            <i class="bi bi-clipboard"></i>
+                                <i class="bi bi-clipboard"></i>
 
-                            Copy
+                                Copy
 
-                        </button>
+                            </button>
 
-                        <button
-                            type="button"
-                            class="btn btn-outline-success btn-sm">
+                            <a
+                                class="btn btn-outline-success btn-sm">
 
-                            <i class="bi bi-download"></i>
+                                <i class="bi bi-file-earmark-text"></i>
 
-                            Download
+                                TXT
 
-                        </button>
+                            </a>
 
-                    </div>
+                            <a
+                                class="btn btn-outline-warning btn-sm">
+
+                                <i class="bi bi-file-earmark-code"></i>
+
+                                FASTA
+
+                            </a>
+
+            
+
+</div>
 
                 </div>
 
@@ -558,6 +637,113 @@
                     </form>
 
     </main>
+
+</div>
+
+<script>
+
+const fastaInput = document.querySelector('input[name="fasta_file"]');
+const txtInput = document.querySelector('input[name="txt_file"]');
+const fileInfo = document.getElementById("selected-file");
+
+function updateFile(input){
+
+    if(input.files.length){
+
+        fileInfo.innerHTML =
+            "📄 <strong>" +
+            input.files[0].name +
+            "</strong> selected and ready.";
+
+    }
+
+}
+
+if(fastaInput){
+
+    fastaInput.addEventListener("change",function(){
+
+        updateFile(this);
+
+    });
+
+}
+
+if(txtInput){
+
+    txtInput.addEventListener("change",function(){
+
+        updateFile(this);
+
+    });
+
+}
+
+</script>
+
+<script>
+
+function copyResult(id){
+
+    const text =
+        document.getElementById(id).innerText;
+
+    navigator.clipboard.writeText(text);
+
+    const toast = new bootstrap.Toast(
+    document.getElementById("copyToast"));
+
+    toast.show();   }
+
+
+function copyAllResults(){
+
+    const cards =
+        document.querySelectorAll(".result-item");
+
+    let output = "";
+
+    cards.forEach(card=>{
+
+        output +=
+            card.innerText + "\n\n";
+
+    });
+
+    navigator.clipboard.writeText(output);
+
+    const toast = new bootstrap.Toast(
+    document.getElementById("copyToast"));
+
+    toast.show();   }
+
+
+</script>
+
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+
+    <div
+        id="copyToast"
+        class="toast align-items-center text-bg-success border-0"
+        role="alert">
+
+        <div class="d-flex">
+
+            <div class="toast-body">
+
+                ✅ Copied successfully!
+
+            </div>
+
+            <button
+                type="button"
+                class="btn-close btn-close-white me-2 m-auto"
+                data-bs-dismiss="toast">
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
