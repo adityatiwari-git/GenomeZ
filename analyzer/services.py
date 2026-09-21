@@ -8,6 +8,7 @@ from .analysis.translation import translate
 from .analysis.motif import find_motif
 from .analysis.orf import find_orfs
 
+
 # Future imports
 # from .analysis.gc_content import gc_content
 # from .analysis.complement import complement
@@ -21,7 +22,7 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
         if tool == "dna_to_rna":
 
             if sequence_type != "DNA":
-                results["DNA → RNA"] = "❌ Input must be a DNA sequence."
+                results["DNA → RNA"] = {"display": "❌ Input must be a DNA sequence.", "raw": None, "format": "text"}
             else:
                 rna = dna_to_rna(sequence)
                 results["DNA → RNA"] = {
@@ -32,7 +33,7 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
         elif tool == "rna_to_dna":
 
             if sequence_type != "RNA":
-                results["RNA → DNA"] = "❌ Input must be an RNA sequence."
+                results["RNA → DNA"] = {"display": "❌ Input must be an RNA sequence.", "raw": None, "format": "text"}
             else:
                 dna = rna_to_dna(sequence)
 
