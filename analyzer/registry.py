@@ -5,6 +5,8 @@ from .analysis.reverse_complement import reverse_complement
 from .analysis.gc_content import gc_content
 from .analysis.atgc_count import atgc_count
 from .analysis.translation import translate
+from .analysis.motif import find_motif
+from .analysis.orf import find_orfs
 
 ANALYSIS_REGISTRY = {
     "dna_to_rna": dna_to_rna,
@@ -14,4 +16,6 @@ ANALYSIS_REGISTRY = {
     "gc_content": gc_content,
     "atgc_count": atgc_count,
     "translation": translate,
+    "motif": find_motif,
+    "orf": find_orfs,
 }
