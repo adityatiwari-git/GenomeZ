@@ -5,746 +5,409 @@
 {% block content %}
 
 <div class="analyzer-container">
-
     <main class="workspace full-workspace">
+        <header class="workspace-header">
+            <div>
+                <p class="workspace-eyebrow">GenomeZ Workspace</p>
+                <h1>Sequence Analyzer</h1>
+                <p>Analyze DNA and RNA sequences with the GenomeZ bioinformatics toolkit.</p>
+            </div>
+            <div class="workspace-status">
+                <span class="status-dot"></span>
+                <span>Ready</span>
+            </div>
+        </header>
 
-        <!-- ===========================
-             HEADER
-        ============================ -->
-
-        <div class="workspace-header">
-
-            <h2>GenomeZ Analyzer</h2>
-
-            <p>
-                Upload a DNA or RNA sequence and choose the analyses you want to perform.
-            </p>
-
-        </div>
-
-        <!-- ===========================
-             MAIN FORM
-        ============================ -->
-        <form method="POST" enctype="multipart/form-data">
-
+        <form method="POST" enctype="multipart/form-data" id="analysis-form">
             {% csrf_token %}
 
-            <!-- ===========================
-                 UPLOAD PANEL
-            ============================ -->
-
-            <div class="upload-panel">
-
-                <div class="d-flex justify-content-between align-items-center mb-4">
-
-                    <div>
-
-                        <h3>Upload Sequence</h3>
-
-                        <p class="mb-0">
-
-                            Supported formats:
-                            Raw DNA,
-                            Raw RNA,
-                            FASTA,
-                            TXT
-
-                        </p>
-
+            <section class="analyzer-grid">
+                <div class="upload-panel gz-card">
+                    <div class="panel-header">
+                        <div>
+                            <h2><i class="bi bi-cloud-arrow-up"></i> Sequence Input</h2>
+                            <p>Paste a sequence or upload a FASTA/TXT file.</p>
+                        </div>
                     </div>
 
+                    <div class="sequence-input-wrap">
+                        <label for="sequence-input" class="form-label">DNA / RNA Sequence</label>
+                        <textarea
+                            id="sequence-input"
+                            class="form-control sequence-box"
+                            name="sequence"
+                            rows="10"
+                            placeholder="Paste your DNA or RNA sequence here...">{{ uploaded_sequence }}</textarea>
+                        <div class="input-hint">
+                            <span><i class="bi bi-info-circle"></i> Whitespace is removed automatically.</span>
+                            <span>Supported: DNA / RNA</span>
+                        </div>
+                    </div>
+
+                    <div class="upload-actions">
+                        <label class="btn btn-outline-primary upload-btn">
+                            <i class="bi bi-file-earmark-arrow-up"></i>
+                            Upload FASTA
+                            <input type="file" name="fasta_file" accept=".fasta,.fa" hidden>
+                        </label>
+
+                        <label class="btn btn-outline-success upload-btn">
+                            <i class="bi bi-file-earmark-text"></i>
+                            Upload TXT
+                            <input type="file" name="txt_file" accept=".txt" hidden>
+                        </label>
+                    </div>
+
+                    <div id="selected-file" class="selected-file alert alert-info mb-0" role="status">
+                        <i class="bi bi-file-earmark"></i>
+                        <span>No file selected.</span>
+                    </div>
+
+                    <div class="motif-input">
+                        <label for="motif-input" class="form-label">
+                            <i class="bi bi-search"></i> Motif Sequence
+                            <span class="optional-label">Optional</span>
+                        </label>
+                        <input
+                            id="motif-input"
+                            type="text"
+                            class="form-control"
+                            name="motif"
+                            placeholder="Example: ATG"
+                            value="{{ request.POST.motif }}">
+                        <small>Used only when Motif Finder is selected.</small>
+                    </div>
                 </div>
 
-                <textarea
-                    class="form-control sequence-box"
-                    name="sequence"
-                    rows="8"
-                    placeholder="Paste your DNA or RNA sequence here...">{{ uploaded_sequence }}</textarea>
-
-                <div class="mt-3">
-
-    <label class="form-label fw-semibold">
-
-        Motif (Optional)
-
-    </label>
-
-    <input
-        type="text"
-        class="form-control"
-        name="motif"
-        placeholder="Example: ATG"
-        value="{{ request.POST.motif }}">
-
-    <small class="text-muted">
-
-        Used only for Motif Finder.
-
-    </small>
-
-</div>
-
-        <div class="upload-buttons mt-4">
-
-    <label class="btn btn-outline-primary">
-
-        <i class="bi bi-file-earmark-arrow-up"></i>
-
-        Upload FASTA
-
-        <input
-            type="file"
-            name="fasta_file"
-            accept=".fasta,.fa"
-            hidden>
-
-    </label>
-
-    <label class="btn btn-outline-success">
-
-        <i class="bi bi-file-earmark-text"></i>
-
-        Upload TXT
-
-        <input
-            type="file"
-            name="txt_file"
-            accept=".txt"
-            hidden>
-
-    </label>
-
-</div>
-
-<div class="mt-3">
-
-    <div
-        id="selected-file"
-        class="alert alert-info py-2">
-
-        No file selected.
-
-    </div>
-
-</div>           
-
-            </div>
-
-            <!-- ===========================
-                 ANALYSIS PANEL
-            ============================ -->
-
-            <div class="analysis-card mt-4">
-
-                <h4>
-
-                    <i class="bi bi-cpu"></i>
-
-                    Select Analyses
-
-                </h4>
-
-                <div class="analysis-grid">
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="dna_to_rna">
-
-                        DNA → RNA
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="rna_to_dna">
-
-                        RNA → DNA
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="gc_content">
-
-                        GC Content
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="atgc_count">
-
-                        Base Count
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="complement">
-
-                        Complement
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="reverse_complement">
-
-                        Reverse Complement
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="translation">
-
-                        Protein Translation
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="motif">
-
-                        Motif Finder
-
-                    </label>
-
-                    <label>
-
-                        <input
-                            type="checkbox"
-                            name="analysis"
-                            value="orf">
-
-                        ORF Finder
-
-                    </label>
-
+                <div class="analysis-card gz-card">
+                    <div class="panel-header">
+                        <div>
+                            <h2><i class="bi bi-cpu"></i> Analysis Pipeline</h2>
+                            <p>Select one or more analyses to run.</p>
+                        </div>
+                        <span class="analysis-count" id="analysis-count">0 selected</span>
+                    </div>
+
+                    <div class="analysis-grid">
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="dna_to_rna">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-arrow-right-circle"></i></span>
+                                <span><strong>DNA → RNA</strong><small>Transcription</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="rna_to_dna">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-arrow-left-circle"></i></span>
+                                <span><strong>RNA → DNA</strong><small>Reverse transcription</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="gc_content">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-pie-chart"></i></span>
+                                <span><strong>GC Content</strong><small>GC / other percentage</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="atgc_count">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-bar-chart"></i></span>
+                                <span><strong>Base Composition</strong><small>Nucleotide counts</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="complement">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-symmetry-vertical"></i></span>
+                                <span><strong>Complement</strong><small>Complementary strand</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="reverse_complement">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-arrow-repeat"></i></span>
+                                <span><strong>Reverse Complement</strong><small>Reverse complementary strand</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="translation">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-diagram-3"></i></span>
+                                <span><strong>Protein Translation</strong><small>Translate into amino acids</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="motif">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-search"></i></span>
+                                <span><strong>Motif Finder</strong><small>Locate sub-sequences</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+
+                        <label class="analysis-option">
+                            <input type="checkbox" name="analysis" value="orf">
+                            <span class="analysis-option-card">
+                                <span class="analysis-icon"><i class="bi bi-bullseye"></i></span>
+                                <span><strong>ORF Finder</strong><small>Identify open reading frames</small></span>
+                                <i class="bi bi-check-circle-fill selected-icon"></i>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pipeline-footer">
+                        <span class="pipeline-note"><i class="bi bi-shield-check"></i> Validation runs before analysis.</span>
+                        <button class="btn btn-primary btn-lg run-analysis-btn" type="submit">
+                            <i class="bi bi-play-fill"></i>
+                            Run Analysis
+                        </button>
+                    </div>
                 </div>
-
-                <div class="text-end mt-4">
-
-                    <button
-    class="btn btn-primary btn-lg px-5"
-    type="submit">
-
-    <i class="bi bi-play-fill"></i>
-
-    Run Analysis
-
-</button>
-
-                </div>
-
-            </div>
-
-                        <!-- ===========================
-                 VALID RESULT
-            ============================ -->
+            </section>
 
             {% if result.valid %}
-
-            <div class="info-grid">
-
-                <!-- ===========================
-                     SEQUENCE SUMMARY
-                ============================ -->
-
-                <div class="summary-card">
-
-                    <div class="summary-header">
-
-                        <h4>
-
-                            <i class="bi bi-check-circle-fill"></i>
-
-                            Sequence Summary
-
-                        </h4>
-
+            <section class="info-grid">
+                <div class="summary-card gz-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h2>Sequence Summary</h2>
+                            <p>Validation and sequence statistics.</p>
+                        </div>
+                        <span class="valid-badge"><i class="bi bi-check-circle-fill"></i> Valid {{ result.type }}</span>
                     </div>
 
-                    <div class="summary-grid">
-
-                        <div class="summary-item">
-
-                            <span>Status</span>
-
-                            <strong class="text-success">
-
-                                Valid {{ result.type }}
-
-                            </strong>
-
+                    <div class="summary-stats">
+                        <div class="summary-stat">
+                            <span class="summary-stat-label">Type</span>
+                            <strong>{{ result.type }}</strong>
                         </div>
-
-                        <div class="summary-item">
-
-                            <span>Sequence Type</span>
-
-                            <strong>
-
-                                {{ result.type }}
-
-                            </strong>
-
+                        <div class="summary-stat">
+                            <span class="summary-stat-label">Length</span>
+                            <strong>{{ result.length }} <small>bp</small></strong>
                         </div>
-
-                        <div class="summary-item">
-
-                            <span>Length</span>
-
-                            <strong>
-
-                                {{ result.length }} bp
-
-                            </strong>
-
+                        <div class="summary-stat">
+                            <span class="summary-stat-label">GC Content</span>
+                            <strong>{{ result.gc_percent }}<small>%</small></strong>
                         </div>
-
-                        <div class="summary-item">
-
-                            <span>GC Content</span>
-
-                            <strong>
-
-                                {{ result.gc_percent }}%
-
-                            </strong>
-
+                        <div class="summary-stat">
+                            <span class="summary-stat-label">{{ result.other_name }} Content</span>
+                            <strong>{{ result.other_percent }}<small>%</small></strong>
                         </div>
-
-                        <div class="summary-item">
-
-                            <span>{{ result.other_name }} Content</span>
-
-                            <strong>
-
-                                {{ result.other_percent }}%
-
-                            </strong>
-
-                        </div>
-
                     </div>
+                </div>
 
-                    <hr>
-
-                    <h5 class="mb-4">
-
-                        Base Composition
-
-                    </h5>
+                <div class="summary-card gz-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h2>Base Composition</h2>
+                            <p>Nucleotide distribution in the sequence.</p>
+                        </div>
+                    </div>
 
                     <div class="base-grid">
-
-                        <div class="base-box">
-
-                            <h3>A</h3>
-
-                            <span>
-
-                                {{ result.counts.A }}
-
-                            </span>
-
-                        </div>
-
+                        <div class="base-box"><span>A</span><strong>{{ result.counts.A }}</strong></div>
                         {% if result.type == "DNA" %}
-
-                        <div class="base-box">
-
-                            <h3>T</h3>
-
-                            <span>
-
-                                {{ result.counts.T }}
-
-                            </span>
-
-                        </div>
-
+                        <div class="base-box"><span>T</span><strong>{{ result.counts.T }}</strong></div>
                         {% else %}
-
-                        <div class="base-box">
-
-                            <h3>U</h3>
-
-                            <span>
-
-                                {{ result.counts.U }}
-
-                            </span>
-
-                        </div>
-
+                        <div class="base-box"><span>U</span><strong>{{ result.counts.U }}</strong></div>
                         {% endif %}
-
-                        <div class="base-box">
-
-                            <h3>G</h3>
-
-                            <span>
-
-                                {{ result.counts.G }}
-
-                            </span>
-
-                        </div>
-
-                        <div class="base-box">
-
-                            <h3>C</h3>
-
-                            <span>
-
-                                {{ result.counts.C }}
-
-                            </span>
-
-                        </div>
-
+                        <div class="base-box"><span>G</span><strong>{{ result.counts.G }}</strong></div>
+                        <div class="base-box"><span>C</span><strong>{{ result.counts.C }}</strong></div>
                     </div>
-
                 </div>
 
-                <!-- ===========================
-                     QUALITY CARD
-                ============================ -->
-
-                <div class="quality-card">
-
-                    <h4>
-
-                        <i class="bi bi-shield-check"></i>
-
-                        Sequence Quality
-
-                    </h4>
+                <div class="quality-card gz-card">
+                    <div class="card-title-row">
+                        <div>
+                            <h2>Sequence Quality</h2>
+                            <p>Pre-analysis validation status.</p>
+                        </div>
+                        <i class="bi bi-shield-check quality-header-icon"></i>
+                    </div>
 
                     <div class="quality-list">
-
-                        <div class="quality-item">
-
-                            ✅ Valid {{ result.type }} sequence
-
-                        </div>
-
-                        <div class="quality-item">
-
-                            ✅ Contains only valid nucleotide bases
-
-                        </div>
-
-                        <div class="quality-item">
-
-                            ✅ Sequence normalized to uppercase
-
-                        </div>
-
-                        <div class="quality-item">
-
-                            ✅ Ready for downstream analysis
-
-                        </div>
-
+                        <div class="quality-item"><i class="bi bi-check-circle-fill"></i><span>Valid {{ result.type }} sequence</span></div>
+                        <div class="quality-item"><i class="bi bi-check-circle-fill"></i><span>Contains only valid nucleotide bases</span></div>
+                        <div class="quality-item"><i class="bi bi-check-circle-fill"></i><span>Sequence normalized to uppercase</span></div>
+                        <div class="quality-item"><i class="bi bi-check-circle-fill"></i><span>Ready for downstream analysis</span></div>
                     </div>
-
                 </div>
-
-            </div>
+            </section>
 
             {% elif result %}
-
-            <!-- ===========================
-                 INVALID RESULT
-            ============================ -->
-
-            <div class="alert alert-danger mt-4">
-
-                <h4>
-
-                    Invalid Sequence
-
-                </h4>
-
-                <p>
-
-                    {{ result.message }}
-
-                </p>
-
-                {% if result.invalid %}
-
-                <strong>
-
-                    Invalid Characters:
-
-                </strong>
-
-                <br>
-
-                {% for char in result.invalid %}
-
-                    {{ char }}
-
-                {% endfor %}
-
-                {% endif %}
-
-            </div>
-
+            <section class="invalid-result alert alert-danger">
+                <div class="invalid-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+                <div>
+                    <h2>Invalid Sequence</h2>
+                    <p>{{ result.message }}</p>
+                    {% if result.invalid %}
+                    <div class="invalid-chars">
+                        <span>Invalid characters detected:</span>
+                        <div class="invalid-char-list">
+                            {% for char in result.invalid %}
+                            <span class="invalid-char">{{ char }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </section>
             {% endif %}
-
-                        <!-- ===========================
-                 ANALYSIS RESULTS
-            ============================ -->
 
             {% if analysis_results %}
-
-            <div class="results-card">
-
-                <div class="results-header d-flex justify-content-between align-items-center flex-wrap">
-
-    <div>
-
-        <h3>
-
-            <i class="bi bi-bar-chart-fill"></i>
-
-            Analysis Results
-
-        </h3>
-
-        <p>
-
-            Generated from the analyzed {{ result.type }} sequence.
-
-        </p>
-
-    </div>
-
-    <div class="d-flex gap-2">
-
-        <button
-            type="button"
-            class="btn btn-outline-primary"
-            onclick="copyAllResults()">
-
-            <i class="bi bi-clipboard-check"></i>
-
-            Copy All
-
-        </button>
-
-        <a
-            href="{% url 'download_report' %}"
-            class="btn btn-success">
-
-            <i class="bi bi-download"></i>
-
-            Download Full Report
-
-        </a>
-
-    </div>
-
-</div>
-
-                {% for title, value in analysis_results.items %}
-
-                <div class="result-item" id="result{{ forloop.counter }}">
-
-                    <div class="result-title">
-
-                        <h5>{{ title }}</h5>
-
+            <section class="results-card gz-card">
+                <div class="results-header">
+                    <div>
+                        <p class="workspace-eyebrow">Computed Output</p>
+                        <h2>Analysis Results</h2>
+                        <p>Generated from the analyzed {{ result.type }} sequence.</p>
                     </div>
-
-                    <div class="result-body">
-
-                        <pre class="result-sequence">{{ value.display }}</pre>
-
+                    <div class="results-actions">
+                        <button type="button" class="btn btn-outline-primary" onclick="copyAllResults()">
+                            <i class="bi bi-clipboard-check"></i> Copy All
+                        </button>
+                        <a href="{% url 'download_report' %}" class="btn btn-success">
+                            <i class="bi bi-download"></i> Download Full Report
+                        </a>
                     </div>
-
-                    <div class="result-actions">
-
-                            <button
-                                type="button"
-                                class="btn btn-outline-primary btn-sm">
-
-                                <i class="bi bi-clipboard"></i>
-
-                                Copy
-
-                            </button>
-
-                            <a
-                                class="btn btn-outline-success btn-sm">
-
-                                <i class="bi bi-file-earmark-text"></i>
-
-                                TXT
-
-                            </a>
-
-                            <a
-                                class="btn btn-outline-warning btn-sm">
-
-                                <i class="bi bi-file-earmark-code"></i>
-
-                                FASTA
-
-                            </a>
-
-            
-
-</div>
-
                 </div>
 
-                {% endfor %}
+                <div class="result-list">
+                    {% for title, value in analysis_results.items %}
+                    <article class="result-item" data-analysis-title="{{ title }}">
+                        <div class="result-title">
+                            <div>
+                                <span class="result-kicker">Analysis</span>
+                                <h3>{{ title }}</h3>
+                            </div>
+                            <i class="bi bi-braces result-icon"></i>
+                        </div>
 
-            </div>
+                        <pre class="result-sequence" id="result{{ forloop.counter }}">{{ value.display }}</pre>
 
+                        <div class="result-actions">
+                            <button type="button" class="btn btn-outline-primary btn-sm" onclick="copyResult('result{{ forloop.counter }}')">
+                                <i class="bi bi-clipboard"></i> Copy
+                            </button>
+
+                            {% if sequence_analyses %}
+                            <a href="{% url 'download_fasta' title %}" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-file-earmark-code"></i> FASTA
+                            </a>
+                            {% endif %}
+                        </div>
+                    </article>
+                    {% endfor %}
+                </div>
+            </section>
             {% endif %}
-
-                    </form>
-
+        </form>
     </main>
-
 </div>
-
-<script>
-
-const fastaInput = document.querySelector('input[name="fasta_file"]');
-const txtInput = document.querySelector('input[name="txt_file"]');
-const fileInfo = document.getElementById("selected-file");
-
-function updateFile(input){
-
-    if(input.files.length){
-
-        fileInfo.innerHTML =
-            "📄 <strong>" +
-            input.files[0].name +
-            "</strong> selected and ready.";
-
-    }
-
-}
-
-if(fastaInput){
-
-    fastaInput.addEventListener("change",function(){
-
-        updateFile(this);
-
-    });
-
-}
-
-if(txtInput){
-
-    txtInput.addEventListener("change",function(){
-
-        updateFile(this);
-
-    });
-
-}
-
-</script>
-
-<script>
-
-function copyResult(id){
-
-    const text =
-        document.getElementById(id).innerText;
-
-    navigator.clipboard.writeText(text);
-
-    const toast = new bootstrap.Toast(
-    document.getElementById("copyToast"));
-
-    toast.show();   }
-
-
-function copyAllResults(){
-
-    const cards =
-        document.querySelectorAll(".result-item");
-
-    let output = "";
-
-    cards.forEach(card=>{
-
-        output +=
-            card.innerText + "\n\n";
-
-    });
-
-    navigator.clipboard.writeText(output);
-
-    const toast = new bootstrap.Toast(
-    document.getElementById("copyToast"));
-
-    toast.show();   }
-
-
-</script>
 
 <div class="toast-container position-fixed bottom-0 end-0 p-3">
-
-    <div
-        id="copyToast"
-        class="toast align-items-center text-bg-success border-0"
-        role="alert">
-
+    <div id="copyToast" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
         <div class="d-flex">
-
-            <div class="toast-body">
-
-                ✅ Copied successfully!
-
-            </div>
-
-            <button
-                type="button"
-                class="btn-close btn-close-white me-2 m-auto"
-                data-bs-dismiss="toast">
-            </button>
-
+            <div class="toast-body"><i class="bi bi-check-circle-fill me-2"></i>Copied successfully!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-
     </div>
-
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const checkboxes = document.querySelectorAll('input[name="analysis"]');
+    const count = document.getElementById("analysis-count");
+    const fastaInput = document.querySelector('input[name="fasta_file"]');
+    const txtInput = document.querySelector('input[name="txt_file"]');
+    const fileInfo = document.getElementById("selected-file");
+
+    function updateAnalysisCount() {
+        const selected = document.querySelectorAll('input[name="analysis"]:checked').length;
+        count.textContent = selected + (selected === 1 ? " selected" : " selected");
+    }
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.addEventListener("change", updateAnalysisCount);
+    });
+    updateAnalysisCount();
+
+    function updateFile(input, type) {
+        if (!input || !input.files.length || !fileInfo) return;
+        const file = input.files[0];
+        fileInfo.innerHTML = '<i class="bi bi-file-earmark-check"></i><span><strong>' +
+            file.name + '</strong> (' + type + ') selected and ready.</span>';
+    }
+
+    if (fastaInput) {
+        fastaInput.addEventListener("change", function () {
+            if (this.files.length && txtInput) txtInput.value = "";
+            updateFile(this, "FASTA");
+        });
+    }
+
+    if (txtInput) {
+        txtInput.addEventListener("change", function () {
+            if (this.files.length && fastaInput) fastaInput.value = "";
+            updateFile(this, "TXT");
+        });
+    }
+});
+
+function showCopyToast() {
+    const toastElement = document.getElementById("copyToast");
+    if (toastElement && window.bootstrap) {
+        bootstrap.Toast.getOrCreateInstance(toastElement).show();
+    }
+}
+
+function copyResult(id) {
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    navigator.clipboard.writeText(target.innerText)
+        .then(showCopyToast)
+        .catch(function () {
+            const range = document.createRange();
+            range.selectNodeContents(target);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+        });
+}
+
+function copyAllResults() {
+    const cards = document.querySelectorAll(".result-item");
+    if (!cards.length) return;
+
+    let output = "";
+    cards.forEach(function (card) {
+        const title = card.querySelector("h3");
+        const sequence = card.querySelector(".result-sequence");
+        if (title && sequence) {
+            output += title.innerText + "\n" + sequence.innerText + "\n\n";
+        }
+    });
+
+    navigator.clipboard.writeText(output.trim())
+        .then(showCopyToast);
+}
+</script>
 
 {% endblock %}
