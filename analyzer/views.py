@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from urllib.parse import quote
 
 from .validators import validate_sequence
 from .services import run_selected_analysis
@@ -58,7 +59,10 @@ def download_report(request):
 
     sequence = request.session.get("sequence")
     sequence_type = request.session.get("sequence_type")
-    results = request.session.get("results")
+    results = request.session.get("results", {})
+
+    if not sequence or not sequence_type or not results:
+        return HttpResponse("No analysis results available.", status=400)
 
     report = generate_txt_report(
         sequence,
@@ -83,6 +87,9 @@ def download_fasta(request, analysis):
     results = request.session.get("results", {})
 
     if analysis not in results:
+        return HttpResponse("Result not found.", status=404)
+
+    
         return HttpResponse("Result not found.", status=404)
 
     result = results[analysis]
