@@ -51,7 +51,7 @@
 
             <!-- Logo -->
 
-            <a class="navbar-brand fw-bold fs-3" href="/">
+            <a class="navbar-brand fw-bold fs-3" href="{% url 'home' %}">
 
                 <span class="text-primary">Genome</span><span class="text-success">Z</span>
 
@@ -95,7 +95,7 @@
 
                 <div class="d-flex align-items-center gap-3">
 
-                    <a href="/accounts/login"
+                    <a href="{% url 'login' %}"
                         class="btn btn-outline-primary rounded-pill px-4">
 
                         Login
