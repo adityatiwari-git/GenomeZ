@@ -12,7 +12,7 @@
             <div>
                 <span class="analyzer-kicker">Sequence Workspace</span>
                 <h1>GenomeZ Analyzer</h1>
-                <p>Paste or upload a DNA/RNA sequence, select your tools, and run the analysis.</p>
+                <p>Paste or upload a DNA, RNA, or protein sequence, select the available tools, and run the analysis.</p>
             </div>
 
             <div class="analyzer-status">
@@ -32,7 +32,7 @@
                         <div>
                             <span class="panel-label">01</span>
                             <h2>Upload Sequence</h2>
-                            <p>Paste raw DNA/RNA or upload a FASTA/TXT file.</p>
+                            <p>Paste a DNA, RNA, or protein sequence, or upload a FASTA/TXT file.</p>
                         </div>
                         <i class="bi bi-dna panel-icon"></i>
                     </div>
@@ -41,7 +41,7 @@
                         class="sequence-box"
                         name="sequence"
                         rows="10"
-                        placeholder="Paste your DNA or RNA sequence here...">{{ uploaded_sequence }}</textarea>
+                        placeholder="Paste your DNA, RNA, or protein sequence here...">{{ uploaded_sequence }}</textarea>
 
                     <div class="field-group">
                         <label for="motif" class="field-label">Motif <span>Optional</span></label>
@@ -99,18 +99,47 @@
                             <div class="stat-card">
                                 <span>Length</span>
                                 <strong>{{ result.length }}</strong>
-                                <small>bp</small>
+                                <small>{% if result.type == "PROTEIN" %}aa{% else %}bp{% endif %}</small>
                             </div>
-                            <div class="stat-card">
-                                <span>GC Content</span>
-                                <strong>{{ result.gc_percent }}%</strong>
-                            </div>
-                            <div class="stat-card">
-                                <span>{{ result.other_name }} Content</span>
-                                <strong>{{ result.other_percent }}%</strong>
-                            </div>
+
+                            {% if result.type != "PROTEIN" %}
+                                <div class="stat-card">
+                                    <span>GC Content</span>
+                                    <strong>{{ result.gc_percent }}%</strong>
+                                </div>
+                                <div class="stat-card">
+                                    <span>{{ result.other_name }} Content</span>
+                                    <strong>{{ result.other_percent }}%</strong>
+                                </div>
+                            {% else %}
+                                <div class="stat-card">
+                                    <span>Amino Acids</span>
+                                    <strong>{{ result.length }}</strong>
+                                </div>
+                                <div class="stat-card">
+                                    <span>Input Type</span>
+                                    <strong>Protein</strong>
+                                </div>
+                            {% endif %}
                         </div>
 
+                        {% if result.type == "PROTEIN" %}
+                        <div class="composition-section">
+                            <div class="composition-heading">
+                                <h3>Amino Acid Composition</h3>
+                                <span>{{ result.length }} amino acids</span>
+                            </div>
+
+                            <div class="protein-grid">
+                                {% for amino_acid, count in result.counts.items %}
+                                <div class="base-box">
+                                    <strong>{{ amino_acid }}</strong>
+                                    <span>{{ count }}</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% else %}
                         <div class="composition-section">
                             <div class="composition-heading">
                                 <h3>Base Composition</h3>
@@ -146,6 +175,7 @@
                                 </div>
                             </div>
                         </div>
+                    {% endif %}
                     {% elif result %}
                         <div class="summary-status error">
                             <i class="bi bi-x-circle-fill"></i>
@@ -258,9 +288,9 @@
 
                     <div class="quality-list">
                         <div><i class="bi bi-check-circle-fill"></i><span>Valid {{ result.type }} sequence</span></div>
-                        <div><i class="bi bi-check-circle-fill"></i><span>Only valid nucleotide bases detected</span></div>
+                        <div><i class="bi bi-check-circle-fill"></i><span>{% if result.type == "PROTEIN" %}Only valid amino-acid letters detected{% else %}Only valid nucleotide bases detected{% endif %}</span></div>
                         <div><i class="bi bi-check-circle-fill"></i><span>Sequence normalized to uppercase</span></div>
-                        <div><i class="bi bi-check-circle-fill"></i><span>Ready for downstream analysis</span></div>
+                        <div><i class="bi bi-check-circle-fill"></i><span>Ready for {% if result.type == "PROTEIN" %}protein analysis{% else %}downstream analysis{% endif %}</span></div>
                     </div>
                 </section>
 
@@ -279,7 +309,7 @@
                     </div>
                     <div class="input-detail">
                         <span>Sequence length</span>
-                        <strong>{{ result.length }} bases</strong>
+                        <strong>{{ result.length }} {% if result.type == "PROTEIN" %}amino acids{% else %}bases{% endif %}</strong>
                     </div>
                     <div class="input-detail">
                         <span>Current type</span>
