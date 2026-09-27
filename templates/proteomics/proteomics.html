@@ -3,90 +3,144 @@
 {% block title %}GenomeZ Proteomics{% endblock %}
 
 {% block content %}
-
 <div class="analyzer-page">
-    <div class="analyzer-shell">
+    <div class="analyzer-shell proteomics-shell">
 
         <div class="analyzer-header">
             <div>
                 <span class="analyzer-kicker">Protein Workspace</span>
                 <h1>GenomeZ Proteomics</h1>
-                <p>Analyze protein sequences and identify matching proteins using biological databases.</p>
+                <p>Analyze protein sequences, calculate basic properties, and search UniProt for matching entries.</p>
             </div>
-
             <div class="analyzer-status">
                 <span class="status-dot"></span>
                 Proteomics
             </div>
         </div>
 
-        <section class="panel">
-            <div class="panel-heading">
-                <div>
-                    <span class="panel-label">01</span>
-                    <h2>Protein Sequence</h2>
-                    <p>Paste a protein sequence or upload a FASTA/TXT file.</p>
-                </div>
-                <i class="bi bi-diagram-3 panel-icon"></i>
-            </div>
+        {% if error %}
+        <div class="proteomics-alert">{{ error }}</div>
+        {% endif %}
 
-            <textarea
-                class="sequence-box"
-                rows="10"
-                placeholder="Example: MALWMRLLPLLALLALWGPD..."></textarea>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
 
-            <div class="upload-actions">
-                <label class="upload-button">
-                    <i class="bi bi-file-earmark-arrow-up"></i>
-                    Upload FASTA
-                    <input type="file" accept=".fasta,.fa" hidden>
-                </label>
-
-                <label class="upload-button upload-button-success">
-                    <i class="bi bi-file-earmark-text"></i>
-                    Upload TXT
-                    <input type="file" accept=".txt" hidden>
-                </label>
-            </div>
-        </section>
-
-        <div class="bottom-grid">
             <section class="panel">
-                <div class="panel-heading compact">
+                <div class="panel-heading">
                     <div>
-                        <span class="panel-label">02</span>
-                        <h2>Protein Analysis</h2>
-                        <p>Protein-specific analysis tools will appear here.</p>
+                        <span class="panel-label">01</span>
+                        <h2>Protein Sequence</h2>
+                        <p>Paste a protein sequence or upload a FASTA/TXT file.</p>
                     </div>
-                    <i class="bi bi-bezier2 panel-icon"></i>
+                    <i class="bi bi-capsule panel-icon"></i>
                 </div>
 
-                <div class="empty-summary">
-                    <i class="bi bi-tools"></i>
-                    <h3>Proteomics tools</h3>
-                    <p>Amino-acid composition, molecular weight, physicochemical properties and more will be added here.</p>
+                <textarea
+                    name="sequence"
+                    class="sequence-box"
+                    rows="10"
+                    placeholder="Example: MALWMRLLPLLALLALWGPD...">{{ sequence }}</textarea>
+
+                <div class="upload-actions">
+                    <label class="upload-button">
+                        <i class="bi bi-file-earmark-arrow-up"></i>
+                        Upload FASTA/TXT
+                        <input type="file" name="sequence_file" accept=".fasta,.fa,.txt" hidden>
+                    </label>
+                    <button type="submit" name="action" value="analyze" class="btn btn-primary analyze-button">
+                        <i class="bi bi-play-fill"></i>
+                        Analyze Protein
+                    </button>
                 </div>
             </section>
+        </form>
 
+        {% if validation %}
+        <section class="panel mt-4">
+            <div class="panel-heading compact">
+                <div>
+                    <span class="panel-label">02</span>
+                    <h2>Sequence Summary</h2>
+                    <p>Validation and basic protein properties.</p>
+                </div>
+                <i class="bi bi-graph-up panel-icon"></i>
+            </div>
+
+            {% if validation.valid %}
+            <div class="protein-summary-grid">
+                <div class="protein-stat"><span>Type</span><strong>Protein</strong></div>
+                <div class="protein-stat"><span>Length</span><strong>{{ analysis.length }} aa</strong></div>
+                <div class="protein-stat"><span>Molecular Weight</span><strong>{{ analysis.molecular_weight }} Da</strong></div>
+                <div class="protein-stat"><span>Hydrophobic Residues</span><strong>{{ analysis.hydrophobic_percent }}%</strong></div>
+            </div>
+            {% else %}
+            <div class="proteomics-alert error">{{ validation.message }}{% if validation.invalid %} Invalid: {{ validation.invalid|join:", " }}{% endif %}</div>
+            {% endif %}
+        </section>
+        {% endif %}
+
+        {% if validation.valid %}
+        <div class="bottom-grid mt-4">
             <section class="panel">
                 <div class="panel-heading compact">
                     <div>
                         <span class="panel-label">03</span>
-                        <h2>Sequence Identification</h2>
-                        <p>Database-backed identification will be added here.</p>
+                        <h2>Amino-Acid Composition</h2>
+                        <p>Count of each standard amino acid in the sequence.</p>
                     </div>
-                    <i class="bi bi-search panel-icon"></i>
+                    <i class="bi bi-bar-chart panel-icon"></i>
                 </div>
 
-                <div class="empty-summary">
-                    <i class="bi bi-database"></i>
-                    <h3>NCBI / UniProt</h3>
-                    <p>Protein similarity search and database matches will be connected here.</p>
+                <div class="composition-grid">
+                    {% for aa, count in analysis.composition.items %}
+                    <div class="composition-item">
+                        <span>{{ aa }}</span>
+                        <strong>{{ count }}</strong>
+                    </div>
+                    {% endfor %}
                 </div>
             </section>
+
+            <section class="panel">
+                <div class="panel-heading compact">
+                    <div>
+                        <span class="panel-label">04</span>
+                        <h2>Sequence Identification</h2>
+                        <p>Search results from UniProt and direct NCBI BLASTP access.</p>
+                    </div>
+                    <i class="bi bi-database panel-icon"></i>
+                </div>
+
+                <a href="{{ blast_url }}" target="_blank" rel="noopener" class="blast-button">
+                    <i class="bi bi-search"></i>
+                    Search sequence with NCBI BLASTP
+                </a>
+
+                {% if search.error %}
+                <div class="proteomics-alert error mt-3">{{ search.error }}</div>
+                {% elif search.matches %}
+                    <div class="match-list mt-3">
+                    {% for match in search.matches %}
+                        <a href="{{ match.url }}" target="_blank" rel="noopener" class="match-card">
+                            <div>
+                                <strong>{{ match.protein_name }}</strong>
+                                <span>{{ match.organism }}</span>
+                                <small>{{ match.accession }}{% if match.gene %} · {{ match.gene }}{% endif %}</small>
+                            </div>
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
+                    {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-summary compact-empty">
+                        <i class="bi bi-search"></i>
+                        <p>No UniProt entries were returned for this exact sequence search.</p>
+                    </div>
+                {% endif %}
+            </section>
         </div>
+        {% endif %}
 
     </div>
 </div>
-
 {% endblock %}
