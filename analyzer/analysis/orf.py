@@ -18,33 +18,34 @@ def find_orfs(sequence, sequence_type):
 
     orfs = []
 
-    i = 0
+    for frame in range(3):
 
-    while i <= len(sequence) - 3:
+        i = frame
 
-        codon = sequence[i:i + 3]
+        while i <= len(sequence) - 3:
 
-        if codon == start_codon:
+            codon = sequence[i:i + 3]
 
-            j = i + 3
+            if codon == start_codon:
 
-            while j <= len(sequence) - 3:
+                j = i + 3
 
-                stop = sequence[j:j + 3]
+                while j <= len(sequence) - 3:
 
-                if stop in stop_codons:
+                    stop = sequence[j:j + 3]
 
-                    orfs.append({
-                        "start": i + 1,
-                        "end": j + 3,
-                        "length": j + 3 - i,
-                        "sequence": sequence[i:j + 3]
-                    })
+                    if stop in stop_codons:
+                        orfs.append({
+                            "start": i + 1,
+                            "end": j + 3,
+                            "length": j + 3 - i,
+                            "sequence": sequence[i:j + 3],
+                            "frame": frame + 1
+                        })
+                        break
 
-                    break
+                    j += 3
 
-                j += 3
-
-        i += 1
+            i += 3
 
     return orfs
