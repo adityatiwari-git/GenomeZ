@@ -2,12 +2,17 @@ import re
 
 DNA_BASES = {"A", "T", "G", "C"}
 RNA_BASES = {"A", "U", "G", "C"}
-VALID_BASES = {"A", "T", "G", "C", "U"}
+PROTEIN_BASES = {
+    "A", "R", "N", "D", "C", "E", "Q", "G", "H",
+    "I", "L", "K", "M", "F", "P", "S", "T", "W",
+    "Y", "V"
+}
+VALID_BASES = DNA_BASES | RNA_BASES
 
 
 def validate_sequence(sequence):
     """
-    Validate and identify whether the sequence is DNA or RNA.
+    Validate and identify DNA, RNA, or protein sequence.
     """
 
     if not sequence:
@@ -16,62 +21,81 @@ def validate_sequence(sequence):
             "message": "Sequence is empty."
         }
 
-    # Remove spaces and newlines
     sequence = re.sub(r"\s+", "", sequence.upper())
 
-    # Find invalid characters
-    invalid = sorted(set(ch for ch in sequence if ch not in VALID_BASES))
+    # Check DNA/RNA first.
+    invalid_nucleotide = sorted(
+        set(ch for ch in sequence if ch not in VALID_BASES)
+    )
 
-    if invalid:
-        return {
-            "valid": False,
-            "sequence": sequence,
-            "message": "Invalid sequence.",
-            "invalid": invalid
+    if not invalid_nucleotide:
+
+        has_t = "T" in sequence
+        has_u = "U" in sequence
+
+        if has_t and has_u:
+            return {
+                "valid": False,
+                "sequence": sequence,
+                "message": (
+                    "Sequence contains both T and U. "
+                    "Mixed DNA/RNA sequences are not supported."
+                )
+            }
+
+        sequence_type = "DNA" if has_t else "RNA"
+
+        counts = {
+            "A": sequence.count("A"),
+            "T": sequence.count("T"),
+            "G": sequence.count("G"),
+            "C": sequence.count("C"),
+            "U": sequence.count("U"),
         }
 
-    has_t = "T" in sequence
-    has_u = "U" in sequence
+        length = len(sequence)
+        gc = counts["G"] + counts["C"]
 
-    # DNA and RNA mixed together
-    if has_t and has_u:
+        if sequence_type == "DNA":
+            other = counts["A"] + counts["T"]
+            other_name = "AT"
+        else:
+            other = counts["A"] + counts["U"]
+            other_name = "AU"
+
         return {
-            "valid": False,
+            "valid": True,
             "sequence": sequence,
-            "message": "Sequence contains both T and U. Mixed DNA/RNA sequences are not supported."
+            "type": sequence_type,
+            "length": length,
+            "counts": counts,
+            "gc_percent": round((gc / length) * 100, 2),
+            "other_percent": round((other / length) * 100, 2),
+            "other_name": other_name,
         }
 
-    sequence_type = "DNA" if has_t else "RNA"
+    # If it is not nucleotide data, check for a protein sequence.
+    invalid_protein = sorted(
+        set(ch for ch in sequence if ch not in PROTEIN_BASES)
+    )
 
-    counts = {
-        "A": sequence.count("A"),
-        "T": sequence.count("T"),
-        "G": sequence.count("G"),
-        "C": sequence.count("C"),
-        "U": sequence.count("U"),
-    }
+    if not invalid_protein:
+        counts = {
+            amino_acid: sequence.count(amino_acid)
+            for amino_acid in sorted(PROTEIN_BASES)
+        }
 
-    length = len(sequence)
-
-    gc = counts["G"] + counts["C"]
-
-    if sequence_type == "DNA":
-        other = counts["A"] + counts["T"]
-        other_name = "AT"
-    else:
-        other = counts["A"] + counts["U"]
-        other_name = "AU"
-
-    gc_percent = round((gc / length) * 100, 2)
-    other_percent = round((other / length) * 100, 2)
+        return {
+            "valid": True,
+            "sequence": sequence,
+            "type": "PROTEIN",
+            "length": len(sequence),
+            "counts": counts,
+        }
 
     return {
-        "valid": True,
+        "valid": False,
         "sequence": sequence,
-        "type": sequence_type,
-        "length": length,
-        "counts": counts,
-        "gc_percent": gc_percent,
-        "other_percent": other_percent,
-        "other_name": other_name,
+        "message": "Invalid sequence.",
+        "invalid": invalid_protein
     }
