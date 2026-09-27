@@ -592,20 +592,50 @@ FOOTER
 
 }
 
-/* Analysis Choice Modal */
+/* ===========================
+   ANALYSIS CHOICE MODAL
+=========================== */
+
+#analysisChoiceModal .modal-dialog{
+    max-width:680px;
+    margin:1rem auto;
+}
+
+#analysisChoiceModal .modal-content{
+    overflow:hidden;
+}
+
+#analysisChoiceModal .modal-header{
+    align-items:flex-start;
+}
+
+#analysisChoiceModal .modal-title{
+    font-size:1.5rem;
+    font-weight:700;
+    color:#1F2937;
+}
+
+#analysisChoiceModal .section-tag{
+    font-size:13px;
+}
+
+#analysisChoiceModal .modal-body{
+    padding-top:0;
+}
 
 .workspace-choice{
-    display:flex;
+    display:grid;
+    grid-template-columns:56px 1fr 24px;
     align-items:center;
-    gap:14px;
-    padding:17px;
-    margin-bottom:12px;
-    border:1px solid #e2e8f0;
+    gap:16px;
+    padding:18px 20px;
+    margin-bottom:14px;
+    border:1px solid #E5E7EB;
     border-radius:16px;
-    background:#fff;
+    background:#FFFFFF;
     color:inherit;
     text-decoration:none;
-    transition:.2s ease;
+    transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
 }
 
 .workspace-choice:last-child{
@@ -614,47 +644,72 @@ FOOTER
 
 .workspace-choice:hover{
     transform:translateY(-2px);
-    border-color:#93c5fd;
-    box-shadow:0 10px 24px rgba(15,23,42,.08);
+    border-color:#BFDBFE;
+    box-shadow:0 12px 28px rgba(15,23,42,.08);
     color:inherit;
 }
 
 .workspace-choice-icon{
-    width:46px;
-    height:46px;
+    width:52px;
+    height:52px;
     display:flex;
     align-items:center;
     justify-content:center;
-    flex:0 0 46px;
-    border-radius:13px;
-    font-size:22px;
+    border-radius:14px;
+    font-size:24px;
 }
 
 .genomics-icon{
-    background:#eff6ff;
-    color:#2563eb;
+    background:#EFF6FF;
+    color:#2563EB;
 }
 
 .proteomics-icon{
-    background:#ecfdf5;
+    background:#ECFDF5;
     color:#059669;
 }
 
-.workspace-choice h5{
-    margin:0 0 4px;
+.workspace-choice-copy h5{
+    margin:0 0 5px;
     color:#172033;
-    font-weight:800;
+    font-weight:700;
+    font-size:1.05rem;
 }
 
-.workspace-choice p{
+.workspace-choice-copy p{
     margin:0;
-    color:#64748b;
-    font-size:13px;
+    color:#64748B;
+    font-size:14px;
     line-height:1.5;
 }
 
 .workspace-arrow{
-    margin-left:auto;
-    color:#94a3b8;
-    font-size:20px;
+    color:#94A3B8;
+    font-size:22px;
+}
+
+@media (max-width:575px){
+    #analysisChoiceModal .modal-dialog{
+        margin:0.75rem;
+    }
+
+    #analysisChoiceModal .modal-title{
+        font-size:1.3rem;
+    }
+
+    .workspace-choice{
+        grid-template-columns:48px 1fr 20px;
+        gap:12px;
+        padding:15px;
+    }
+
+    .workspace-choice-icon{
+        width:46px;
+        height:46px;
+        font-size:21px;
+    }
+
+    .workspace-choice-copy p{
+        font-size:13px;
+    }
 }
