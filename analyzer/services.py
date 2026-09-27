@@ -49,21 +49,35 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
 
         elif tool == "complement":
 
-            comp = complement(sequence, sequence_type)
-            results["Complement"] = {
-                "display": comp,
-                "raw": comp,
-                "format": "sequence"
-            }
+            if sequence_type == "PROTEIN":
+                results["Complement"] = {
+                    "display": "❌ Complement is only available for DNA/RNA sequences.",
+                    "raw": None,
+                    "format": "text"
+                }
+            else:
+                comp = complement(sequence, sequence_type)
+                results["Complement"] = {
+                    "display": comp,
+                    "raw": comp,
+                    "format": "sequence"
+                }
 
         elif tool == "reverse_complement":
 
-            rev = reverse_complement(sequence, sequence_type)
-            results["Reverse Complement"] = {
-                "display": rev,
-                "raw": rev,
-                "format": "sequence"
-            }
+            if sequence_type == "PROTEIN":
+                results["Reverse Complement"] = {
+                    "display": "❌ Reverse Complement is only available for DNA/RNA sequences.",
+                    "raw": None,
+                    "format": "text"
+                }
+            else:
+                rev = reverse_complement(sequence, sequence_type)
+                results["Reverse Complement"] = {
+                    "display": rev,
+                    "raw": rev,
+                    "format": "sequence"
+                }
 
         elif tool == "gc_content":
 
