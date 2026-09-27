@@ -12,8 +12,13 @@
             <div>
                 <span class="analyzer-kicker">Sequence Workspace</span>
                 <h1>GenomeZ Analyzer</h1>
-                <p>Paste or upload a DNA, RNA, or protein sequence, select the available tools, and run the analysis.</p>
+                <p>Paste or upload a DNA or RNA sequence, select the available genomics tools, and run the analysis.</p>
             </div>
+
+            <a class="secondary-button" href="{% url 'proteomics' %}">
+                <i class="bi bi-diagram-3"></i>
+                Proteomics
+            </a>
 
             <div class="analyzer-status">
                 <span class="status-dot"></span>
@@ -32,7 +37,7 @@
                         <div>
                             <span class="panel-label">01</span>
                             <h2>Upload Sequence</h2>
-                            <p>Paste a DNA, RNA, or protein sequence, or upload a FASTA/TXT file.</p>
+                            <p>Paste a DNA or RNA sequence, or upload a FASTA/TXT file.</p>
                         </div>
                         <i class="bi bi-dna panel-icon"></i>
                     </div>
@@ -41,7 +46,7 @@
                         class="sequence-box"
                         name="sequence"
                         rows="10"
-                        placeholder="Paste your DNA, RNA, or protein sequence here...">{{ uploaded_sequence }}</textarea>
+                        placeholder="Paste your DNA or RNA sequence here...">{{ uploaded_sequence }}</textarea>
 
                     <div class="field-group">
                         <label for="motif" class="field-label">Motif <span>Optional</span></label>
@@ -99,47 +104,19 @@
                             <div class="stat-card">
                                 <span>Length</span>
                                 <strong>{{ result.length }}</strong>
-                                <small>{% if result.type == "PROTEIN" %}aa{% else %}bp{% endif %}</small>
+                                <small>bp</small>
                             </div>
 
-                            {% if result.type != "PROTEIN" %}
-                                <div class="stat-card">
-                                    <span>GC Content</span>
-                                    <strong>{{ result.gc_percent }}%</strong>
-                                </div>
-                                <div class="stat-card">
-                                    <span>{{ result.other_name }} Content</span>
-                                    <strong>{{ result.other_percent }}%</strong>
-                                </div>
-                            {% else %}
-                                <div class="stat-card">
-                                    <span>Amino Acids</span>
-                                    <strong>{{ result.length }}</strong>
-                                </div>
-                                <div class="stat-card">
-                                    <span>Input Type</span>
-                                    <strong>Protein</strong>
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        {% if result.type == "PROTEIN" %}
-                        <div class="composition-section">
-                            <div class="composition-heading">
-                                <h3>Amino Acid Composition</h3>
-                                <span>{{ result.length }} amino acids</span>
+                            <div class="stat-card">
+                                <span>GC Content</span>
+                                <strong>{{ result.gc_percent }}%</strong>
                             </div>
-
-                            <div class="protein-grid">
-                                {% for amino_acid, count in result.counts.items %}
-                                <div class="base-box">
-                                    <strong>{{ amino_acid }}</strong>
-                                    <span>{{ count }}</span>
-                                </div>
-                                {% endfor %}
+                            <div class="stat-card">
+                                <span>{{ result.other_name }} Content</span>
+                                <strong>{{ result.other_percent }}%</strong>
                             </div>
                         </div>
-                    {% else %}
+
                         <div class="composition-section">
                             <div class="composition-heading">
                                 <h3>Base Composition</h3>
@@ -175,7 +152,6 @@
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
                     {% elif result %}
                         <div class="summary-status error">
                             <i class="bi bi-x-circle-fill"></i>
@@ -212,55 +188,55 @@
 
                 <div class="tool-grid">
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="dna_to_rna" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="dna_to_rna">
                         <span class="tool-check"><i class="bi bi-arrow-right"></i></span>
                         <span><strong>DNA → RNA</strong><small>Convert DNA to RNA</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="rna_to_dna" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="rna_to_dna">
                         <span class="tool-check"><i class="bi bi-arrow-left-right"></i></span>
                         <span><strong>RNA → DNA</strong><small>Convert RNA to DNA</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="gc_content" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="gc_content">
                         <span class="tool-check"><i class="bi bi-percent"></i></span>
                         <span><strong>GC Content</strong><small>Calculate GC percentage</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="atgc_count" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="atgc_count">
                         <span class="tool-check"><i class="bi bi-grid-3x3-gap"></i></span>
                         <span><strong>Base Count</strong><small>Count A/T/U/G/C bases</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="complement" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="complement">
                         <span class="tool-check"><i class="bi bi-bezier2"></i></span>
                         <span><strong>Complement</strong><small>Generate complement</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="reverse_complement" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="reverse_complement">
                         <span class="tool-check"><i class="bi bi-arrow-repeat"></i></span>
                         <span><strong>Reverse Complement</strong><small>Reverse and complement</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="translation" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="translation">
                         <span class="tool-check"><i class="bi bi-bezier"></i></span>
                         <span><strong>Protein Translation</strong><small>Translate codons</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="motif" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="motif">
                         <span class="tool-check"><i class="bi bi-search"></i></span>
                         <span><strong>Motif Finder</strong><small>Find motif positions</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="orf" data-nucleotide-only="true">
+                        <input type="checkbox" name="analysis" value="orf">
                         <span class="tool-check"><i class="bi bi-signpost-split"></i></span>
                         <span><strong>ORF Finder</strong><small>Find open reading frames</small></span>
                     </label>
@@ -288,9 +264,9 @@
 
                     <div class="quality-list">
                         <div><i class="bi bi-check-circle-fill"></i><span>Valid {{ result.type }} sequence</span></div>
-                        <div><i class="bi bi-check-circle-fill"></i><span>{% if result.type == "PROTEIN" %}Only valid amino-acid letters detected{% else %}Only valid nucleotide bases detected{% endif %}</span></div>
+                        <div><i class="bi bi-check-circle-fill"></i><span>Only valid nucleotide bases detected</span></div>
                         <div><i class="bi bi-check-circle-fill"></i><span>Sequence normalized to uppercase</span></div>
-                        <div><i class="bi bi-check-circle-fill"></i><span>Ready for {% if result.type == "PROTEIN" %}protein analysis{% else %}downstream analysis{% endif %}</span></div>
+                        <div><i class="bi bi-check-circle-fill"></i><span>Ready for downstream analysis</span></div>
                     </div>
                 </section>
 
@@ -309,7 +285,7 @@
                     </div>
                     <div class="input-detail">
                         <span>Sequence length</span>
-                        <strong>{{ result.length }} {% if result.type == "PROTEIN" %}amino acids{% else %}bases{% endif %}</strong>
+                        <strong>{{ result.length }} bases</strong>
                     </div>
                     <div class="input-detail">
                         <span>Current type</span>
@@ -460,23 +436,6 @@ function downloadResultAsTxt(id, title) {
 
     URL.revokeObjectURL(url);
 }
-
-function updateProteinTools() {
-    const typeText = document.querySelector(".summary-status.success");
-    const isProtein = typeText && typeText.innerText.includes("PROTEIN");
-
-    document.querySelectorAll('input[name="analysis"][data-nucleotide-only="true"]').forEach(input => {
-        input.disabled = isProtein;
-
-        if (isProtein) {
-            input.checked = false;
-        }
-
-        input.closest(".tool-card")?.classList.toggle("tool-disabled", isProtein);
-    });
-}
-
-updateProteinTools();
 
 function showCopyToast() {
     const toastElement = document.getElementById("copyToast");
