@@ -58,14 +58,8 @@
 
                         <label class="upload-button compact-upload">
                             <i class="bi bi-upload"></i>
-                            Upload
-                            <input type="file" name="fasta_file" accept=".fasta,.fa,.txt" hidden>
-                        </label>
-
-                        <label class="upload-button compact-upload upload-button-success">
-                            <i class="bi bi-file-earmark-text"></i>
-                            TXT
-                            <input type="file" name="txt_file" accept=".txt" hidden>
+                            Upload FASTA / TXT
+                            <input type="file" name="sequence_file" accept=".fasta,.fa,.txt" hidden>
                         </label>
                     </div>
 
@@ -296,8 +290,7 @@
 </div>
 
 <script>
-const fastaInput = document.querySelector('input[name="fasta_file"]');
-const txtInput = document.querySelector('input[name="txt_file"]');
+const sequenceFileInput = document.querySelector('input[name="sequence_file"]');
 const fileInfo = document.getElementById("selected-file");
 const inputSource = document.getElementById("input-source");
 
@@ -316,16 +309,8 @@ function updateFile(input) {
     }
 }
 
-if (fastaInput) {
-    fastaInput.addEventListener("change", function () {
-        if (txtInput) txtInput.value = "";
-        updateFile(this);
-    });
-}
-
-if (txtInput) {
-    txtInput.addEventListener("change", function () {
-        if (fastaInput) fastaInput.value = "";
+if (sequenceFileInput) {
+    sequenceFileInput.addEventListener("change", function () {
         updateFile(this);
     });
 }
