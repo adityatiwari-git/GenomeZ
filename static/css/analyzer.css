@@ -442,6 +442,17 @@
     box-shadow:0 0 0 3px rgba(37,99,235,.08);
 }
 
+.tool-card.tool-disabled{
+    opacity:.45;
+    cursor:not-allowed;
+}
+
+.tool-card.tool-disabled:hover{
+    transform:none;
+    border-color:#e2e8f0;
+    box-shadow:none;
+}
+
 .tool-check{
     width:38px;
     height:38px;
