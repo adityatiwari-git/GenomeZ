@@ -1339,3 +1339,18 @@
         font-size:28px;
     }
 }
+
+.auth-user-label{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:8px 10px;
+    color:#475569;
+    font-size:13px;
+    font-weight:600;
+}
+
+.auth-user-label i{
+    color:#2563eb;
+}
+
