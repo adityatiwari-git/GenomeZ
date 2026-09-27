@@ -14,6 +14,26 @@ from .analysis.orf import find_orfs
 
 class AnalyzerTests(TestCase):
 
+    def test_analyzer_is_public(self):
+        response = self.client.get("/analyzer/")
+        self.assertEqual(response.status_code, 200)
+
+    def test_guest_can_use_free_tool(self):
+        response = self.client.post(
+            "/analyzer/",
+            {"sequence": "ATGC", "analysis": ["gc_content"]},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "GC Content")
+
+    def test_guest_is_redirected_for_premium_tool(self):
+        response = self.client.post(
+            "/analyzer/",
+            {"sequence": "ATGC", "analysis": ["blast"]},
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/accounts/login/", response["Location"])
+
     def test_dna_validation(self):
         result = validate_sequence("ATGC")
         self.assertTrue(result["valid"])
@@ -76,8 +96,3 @@ class AnalyzerTests(TestCase):
         self.assertEqual(result[0]["start"], 4)
         self.assertEqual(result[0]["end"], 12)
         self.assertEqual(result[0]["frame"], 1)
-
-
-    def test_analyzer_requires_login(self):
-        response = self.client.get("/analyzer/")
-        self.assertEqual(response.status_code, 302)
