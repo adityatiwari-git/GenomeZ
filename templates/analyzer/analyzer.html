@@ -332,12 +332,13 @@
                                 Copy
                             </button>
 
-                            <a
+                            <button
+                                type="button"
                                 class="secondary-button"
-                                href="{% url 'download_txt' title %}">
+                                onclick="downloadResultAsTxt('result{{ forloop.counter }}', '{{ title|escapejs }}')">
                                 <i class="bi bi-file-earmark-text"></i>
                                 TXT
-                            </a>
+                            </button>
 
                             {% if value.format == "sequence" %}
                             <a
@@ -408,6 +409,26 @@ function copyAllResults() {
     });
 
     navigator.clipboard.writeText(output).then(showCopyToast);
+}
+
+function downloadResultAsTxt(id, title) {
+    const card = document.getElementById(id);
+
+    if (!card) return;
+
+    const text = card.innerText;
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = title.replace(/\s+/g, "_") + ".txt";
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
 }
 
 function showCopyToast() {
