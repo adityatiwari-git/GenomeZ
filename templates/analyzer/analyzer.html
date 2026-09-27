@@ -129,19 +129,26 @@
                             <span><strong>Motif Finder</strong><small>Positions</small></span>
                         </label>
 
+                        {% if is_authenticated %}
                         <label class="tool-card compact-tool-card premium-tool-card">
-                            <input type="checkbox" name="analysis" value="blast" {% if not is_authenticated %}disabled{% endif %}>
+                            <input type="checkbox" name="analysis" value="blast">
                             <span class="tool-check"><i class="bi bi-database"></i></span>
                             <span>
                                 <strong>Sequence Identification</strong>
-                                <small>
-                                    {% if is_authenticated %}NCBI / database search{% else %}Login required{% endif %}
-                                </small>
+                                <small>NCBI / database search</small>
                             </span>
-                            {% if not is_authenticated %}
-                                <span class="premium-lock"><i class="bi bi-lock-fill"></i></span>
-                            {% endif %}
                         </label>
+                        {% else %}
+                        <a class="tool-card compact-tool-card premium-tool-card premium-tool-link"
+                           href="{% url 'login' %}?next={% url 'analyzer' %}">
+                            <span class="tool-check"><i class="bi bi-database"></i></span>
+                            <span>
+                                <strong>Sequence Identification</strong>
+                                <small>Login required</small>
+                            </span>
+                            <span class="premium-lock"><i class="bi bi-lock-fill"></i></span>
+                        </a>
+                        {% endif %}
 
                         <label class="tool-card compact-tool-card">
                             <input type="checkbox" name="analysis" value="orf">
@@ -153,10 +160,7 @@
                     <div class="premium-login-note">
                         {% if not is_authenticated %}
                             <i class="bi bi-lock-fill"></i>
-                            <span>Premium tools are available to logged-in users.</span>
-                            <a href="{% url 'login' %}?next={% url 'analyzer' %}">Login</a>
-                            <span>or</span>
-                            <a href="{% url 'signup' %}?next={% url 'analyzer' %}">Register</a>
+                            <span>One premium tool shown above requires an account.</span>
                         {% else %}
                             <i class="bi bi-unlock-fill"></i>
                             <span>All premium tools are unlocked for your account.</span>
