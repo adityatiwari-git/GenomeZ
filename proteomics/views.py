@@ -1,4 +1,3 @@
-import json
 import re
 from collections import Counter
 from urllib.parse import quote
@@ -62,14 +61,14 @@ def analyze_protein(sequence):
 def uniprot_search(sequence):
     url = "https://rest.uniprot.org/uniprotkb/search"
     params = {
-        "query": f"sequence:{sequence}",
+        "query": f"\"{sequence}\"",
         "format": "tsv",
         "fields": "accession,id,protein_name,gene_names,organism_name,length",
         "size": 5,
     }
 
     try:
-        response = requests.get(url, params=params, timeout=15)
+        response = requests.get(url, params=params, timeout=15, headers={"User-Agent": "GenomeZ/1.0"})
         response.raise_for_status()
     except requests.RequestException as exc:
         return {"error": f"UniProt search failed: {exc}"}
