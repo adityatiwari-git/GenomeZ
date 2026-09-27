@@ -2,17 +2,12 @@ import re
 
 DNA_BASES = {"A", "T", "G", "C"}
 RNA_BASES = {"A", "U", "G", "C"}
-PROTEIN_BASES = {
-    "A", "R", "N", "D", "C", "E", "Q", "G", "H",
-    "I", "L", "K", "M", "F", "P", "S", "T", "W",
-    "Y", "V"
-}
 VALID_BASES = DNA_BASES | RNA_BASES
 
 
 def validate_sequence(sequence):
     """
-    Validate and identify DNA, RNA, or protein sequence.
+    Validate and identify a DNA or RNA sequence.
     """
 
     if not sequence:
@@ -23,80 +18,55 @@ def validate_sequence(sequence):
 
     sequence = re.sub(r"\s+", "", sequence.upper())
 
-    # Check DNA/RNA first.
-    invalid_nucleotide = sorted(
+    invalid = sorted(
         set(ch for ch in sequence if ch not in VALID_BASES)
     )
 
-    if not invalid_nucleotide:
-
-        has_t = "T" in sequence
-        has_u = "U" in sequence
-
-        if has_t and has_u:
-            return {
-                "valid": False,
-                "sequence": sequence,
-                "message": (
-                    "Sequence contains both T and U. "
-                    "Mixed DNA/RNA sequences are not supported."
-                )
-            }
-
-        sequence_type = "DNA" if has_t else "RNA"
-
-        counts = {
-            "A": sequence.count("A"),
-            "T": sequence.count("T"),
-            "G": sequence.count("G"),
-            "C": sequence.count("C"),
-            "U": sequence.count("U"),
-        }
-
-        length = len(sequence)
-        gc = counts["G"] + counts["C"]
-
-        if sequence_type == "DNA":
-            other = counts["A"] + counts["T"]
-            other_name = "AT"
-        else:
-            other = counts["A"] + counts["U"]
-            other_name = "AU"
-
+    if invalid:
         return {
-            "valid": True,
+            "valid": False,
             "sequence": sequence,
-            "type": sequence_type,
-            "length": length,
-            "counts": counts,
-            "gc_percent": round((gc / length) * 100, 2),
-            "other_percent": round((other / length) * 100, 2),
-            "other_name": other_name,
+            "message": "Invalid sequence.",
+            "invalid": invalid
         }
 
-    # If it is not nucleotide data, check for a protein sequence.
-    invalid_protein = sorted(
-        set(ch for ch in sequence if ch not in PROTEIN_BASES)
-    )
+    has_t = "T" in sequence
+    has_u = "U" in sequence
 
-    if not invalid_protein:
-        counts = {
-            amino_acid: sequence.count(amino_acid)
-            for amino_acid in sorted(PROTEIN_BASES)
-        }
-
+    if has_t and has_u:
         return {
-            "valid": True,
+            "valid": False,
             "sequence": sequence,
-            "type": "PROTEIN",
-            "length": len(sequence),
-            "counts": counts,
-            "protein_counts": counts,
+            "message": "Sequence contains both T and U. Mixed DNA/RNA sequences are not supported."
         }
+
+    sequence_type = "DNA" if has_t else "RNA"
+
+    counts = {
+        "A": sequence.count("A"),
+        "T": sequence.count("T"),
+        "G": sequence.count("G"),
+        "C": sequence.count("C"),
+        "U": sequence.count("U"),
+    }
+
+    length = len(sequence)
+    gc = counts["G"] + counts["C"]
+
+    if sequence_type == "DNA":
+        other = counts["A"] + counts["T"]
+        other_name = "AT"
+    else:
+        other = counts["A"] + counts["U"]
+        other_name = "AU"
 
     return {
-        "valid": False,
+        "valid": True,
         "sequence": sequence,
-        "message": "Invalid sequence.",
-        "invalid": invalid_protein
+        "type": sequence_type,
+        "length": length,
+        "counts": counts,
+        "gc_percent": round((gc / length) * 100, 2),
+        "other_percent": round((other / length) * 100, 2),
+        "other_name": other_name,
     }
