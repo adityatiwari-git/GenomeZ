@@ -36,7 +36,8 @@
                     <div class="panel-heading">
                         <div>
                             <span class="panel-label">01</span>
-                            <h2>Sequence</h2>
+                            <h2>Sequence Input</h2>
+                            <p>Paste a DNA/RNA sequence or upload a FASTA/TXT file.</p>
                         </div>
                         <i class="bi bi-dna panel-icon"></i>
                     </div>
@@ -69,158 +70,141 @@
                     </div>
                 </section>
 
-                <section class="panel summary-panel">
+                <section class="panel tools-panel compact-tools-panel">
                     <div class="panel-heading">
                         <div>
                             <span class="panel-label">02</span>
-                            <h2>Summary</h2>
+                            <h2>Select Tools</h2>
+                            <p>Choose the analyses to run on this sequence.</p>
                         </div>
-                        <i class="bi bi-bar-chart-line panel-icon"></i>
+                        <i class="bi bi-cpu panel-icon"></i>
                     </div>
 
-                    {% if result.valid %}
-                        <div class="summary-status success">
-                            <i class="bi bi-check-circle-fill"></i>
-                            Valid {{ result.type }} · {{ result.length }} bases
-                        </div>
+                    <div class="tool-grid compact-tool-grid">
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="dna_to_rna">
+                            <span class="tool-check"><i class="bi bi-arrow-right"></i></span>
+                            <span><strong>DNA → RNA</strong><small>Convert</small></span>
+                        </label>
 
-                        <div class="summary-stats compact-summary-stats">
-                            <div class="stat-card">
-                                <span>GC Content</span>
-                                <strong>{{ result.gc_percent }}%</strong>
-                            </div>
-                            <div class="stat-card">
-                                <span>{{ result.other_name }} Content</span>
-                                <strong>{{ result.other_percent }}%</strong>
-                            </div>
-                        </div>
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="rna_to_dna">
+                            <span class="tool-check"><i class="bi bi-arrow-left-right"></i></span>
+                            <span><strong>RNA → DNA</strong><small>Convert</small></span>
+                        </label>
 
-                        <div class="composition-section compact-composition">
-                            <div class="composition-heading">
-                                <h3>Base Composition</h3>
-                            </div>
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="gc_content">
+                            <span class="tool-check"><i class="bi bi-percent"></i></span>
+                            <span><strong>GC Content</strong><small>Percentage</small></span>
+                        </label>
 
-                            <div class="base-grid">
-                                <div class="base-box">
-                                    <strong>A</strong>
-                                    <span>{{ result.counts.A }}</span>
-                                </div>
-                                {% if result.type == "DNA" %}
-                                    <div class="base-box">
-                                        <strong>T</strong>
-                                        <span>{{ result.counts.T }}</span>
-                                    </div>
-                                {% else %}
-                                    <div class="base-box">
-                                        <strong>U</strong>
-                                        <span>{{ result.counts.U }}</span>
-                                    </div>
-                                {% endif %}
-                                <div class="base-box">
-                                    <strong>G</strong>
-                                    <span>{{ result.counts.G }}</span>
-                                </div>
-                                <div class="base-box">
-                                    <strong>C</strong>
-                                    <span>{{ result.counts.C }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% elif result %}
-                        <div class="summary-status error">
-                            <i class="bi bi-x-circle-fill"></i>
-                            Invalid sequence
-                        </div>
-                        <p class="error-text">{{ result.message }}</p>
-                        {% if result.invalid %}
-                            <div class="invalid-chars">
-                                <span>Invalid characters</span>
-                                <strong>{{ result.invalid|join:", " }}</strong>
-                            </div>
-                        {% endif %}
-                    {% else %}
-                        <div class="empty-summary compact-empty-summary">
-                            <i class="bi bi-activity"></i>
-                            <p>Sequence type, length and composition will appear here.</p>
-                        </div>
-                    {% endif %}
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="atgc_count">
+                            <span class="tool-check"><i class="bi bi-grid-3x3-gap"></i></span>
+                            <span><strong>Base Count</strong><small>Nucleotides</small></span>
+                        </label>
+
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="complement">
+                            <span class="tool-check"><i class="bi bi-bezier2"></i></span>
+                            <span><strong>Complement</strong><small>Sequence</small></span>
+                        </label>
+
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="reverse_complement">
+                            <span class="tool-check"><i class="bi bi-arrow-repeat"></i></span>
+                            <span><strong>Reverse Complement</strong><small>Sequence</small></span>
+                        </label>
+
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="translation">
+                            <span class="tool-check"><i class="bi bi-bezier"></i></span>
+                            <span><strong>Translation</strong><small>Protein</small></span>
+                        </label>
+
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="motif">
+                            <span class="tool-check"><i class="bi bi-search"></i></span>
+                            <span><strong>Motif Finder</strong><small>Positions</small></span>
+                        </label>
+
+                        <label class="tool-card compact-tool-card">
+                            <input type="checkbox" name="analysis" value="orf">
+                            <span class="tool-check"><i class="bi bi-signpost-split"></i></span>
+                            <span><strong>ORF Finder</strong><small>Open frames</small></span>
+                        </label>
+                    </div>
+
+                    <div class="run-row">
+                        <button class="run-button" type="submit">
+                            <i class="bi bi-play-fill"></i>
+                            Run Analysis
+                        </button>
+                    </div>
                 </section>
 
             </div>
 
-            <section class="panel tools-panel compact-tools-panel">
+            {% if result and result.valid %}
+            <section class="panel compact-summary-after mt-4">
                 <div class="panel-heading">
                     <div>
                         <span class="panel-label">03</span>
-                        <h2>Analysis Tools</h2>
-                        <p>Select the operations you want to run.</p>
+                        <h2>Sequence Summary</h2>
+                        <p>Detected properties of the analyzed sequence.</p>
                     </div>
-                    <i class="bi bi-cpu panel-icon"></i>
+                    <i class="bi bi-bar-chart-line panel-icon"></i>
                 </div>
 
-                <div class="tool-grid compact-tool-grid">
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="dna_to_rna">
-                        <span class="tool-check"><i class="bi bi-arrow-right"></i></span>
-                        <span><strong>DNA → RNA</strong><small>Convert</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="rna_to_dna">
-                        <span class="tool-check"><i class="bi bi-arrow-left-right"></i></span>
-                        <span><strong>RNA → DNA</strong><small>Convert</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="gc_content">
-                        <span class="tool-check"><i class="bi bi-percent"></i></span>
-                        <span><strong>GC Content</strong><small>Percentage</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="atgc_count">
-                        <span class="tool-check"><i class="bi bi-grid-3x3-gap"></i></span>
-                        <span><strong>Base Count</strong><small>Nucleotides</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="complement">
-                        <span class="tool-check"><i class="bi bi-bezier2"></i></span>
-                        <span><strong>Complement</strong><small>Sequence</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="reverse_complement">
-                        <span class="tool-check"><i class="bi bi-arrow-repeat"></i></span>
-                        <span><strong>Reverse Complement</strong><small>Sequence</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="translation">
-                        <span class="tool-check"><i class="bi bi-bezier"></i></span>
-                        <span><strong>Translation</strong><small>Protein</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="motif">
-                        <span class="tool-check"><i class="bi bi-search"></i></span>
-                        <span><strong>Motif Finder</strong><small>Positions</small></span>
-                    </label>
-
-                    <label class="tool-card compact-tool-card">
-                        <input type="checkbox" name="analysis" value="orf">
-                        <span class="tool-check"><i class="bi bi-signpost-split"></i></span>
-                        <span><strong>ORF Finder</strong><small>Open frames</small></span>
-                    </label>
+                <div class="summary-status success">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Valid {{ result.type }} · {{ result.length }} bases
                 </div>
 
-                <div class="run-row">
-                    <button class="run-button" type="submit">
-                        <i class="bi bi-play-fill"></i>
-                        Run Analysis
-                    </button>
+                <div class="summary-stats compact-summary-stats">
+                    <div class="stat-card">
+                        <span>GC Content</span>
+                        <strong>{{ result.gc_percent }}%</strong>
+                    </div>
+                    <div class="stat-card">
+                        <span>{{ result.other_name }} Content</span>
+                        <strong>{{ result.other_percent }}%</strong>
+                    </div>
+                </div>
+
+                <div class="composition-section compact-composition">
+                    <div class="composition-heading">
+                        <h3>Base Composition</h3>
+                    </div>
+
+                    <div class="base-grid">
+                        <div class="base-box"><strong>A</strong><span>{{ result.counts.A }}</span></div>
+                        {% if result.type == "DNA" %}
+                            <div class="base-box"><strong>T</strong><span>{{ result.counts.T }}</span></div>
+                        {% else %}
+                            <div class="base-box"><strong>U</strong><span>{{ result.counts.U }}</span></div>
+                        {% endif %}
+                        <div class="base-box"><strong>G</strong><span>{{ result.counts.G }}</span></div>
+                        <div class="base-box"><strong>C</strong><span>{{ result.counts.C }}</span></div>
+                    </div>
                 </div>
             </section>
+            {% elif result %}
+            <section class="panel compact-summary-after mt-4">
+                <div class="summary-status error">
+                    <i class="bi bi-x-circle-fill"></i>
+                    Invalid sequence
+                </div>
+                <p class="error-text">{{ result.message }}</p>
+                {% if result.invalid %}
+                    <div class="invalid-chars">
+                        <span>Invalid characters</span>
+                        <strong>{{ result.invalid|join:", " }}</strong>
+                    </div>
+                {% endif %}
+            </section>
+            {% endif %}
 
             {% if analysis_results %}
             <section class="panel results-panel">
