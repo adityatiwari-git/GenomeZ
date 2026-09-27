@@ -91,6 +91,7 @@ def validate_sequence(sequence):
             "type": "PROTEIN",
             "length": len(sequence),
             "counts": counts,
+            "protein_counts": counts,
         }
 
     return {
