@@ -752,3 +752,25 @@
         width:100%;
     }
 }
+
+.protein-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:8px;
+}
+
+.protein-grid .base-box{
+    padding:10px 6px;
+}
+
+@media(max-width:760px){
+    .protein-grid{
+        grid-template-columns:repeat(4,1fr);
+    }
+}
+
+@media(max-width:520px){
+    .protein-grid{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
