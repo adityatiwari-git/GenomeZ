@@ -129,11 +129,38 @@
                             <span><strong>Motif Finder</strong><small>Positions</small></span>
                         </label>
 
+                        <label class="tool-card compact-tool-card premium-tool-card">
+                            <input type="checkbox" name="analysis" value="blast" {% if not is_authenticated %}disabled{% endif %}>
+                            <span class="tool-check"><i class="bi bi-database"></i></span>
+                            <span>
+                                <strong>Sequence Identification</strong>
+                                <small>
+                                    {% if is_authenticated %}NCBI / database search{% else %}Login required{% endif %}
+                                </small>
+                            </span>
+                            {% if not is_authenticated %}
+                                <span class="premium-lock"><i class="bi bi-lock-fill"></i></span>
+                            {% endif %}
+                        </label>
+
                         <label class="tool-card compact-tool-card">
                             <input type="checkbox" name="analysis" value="orf">
                             <span class="tool-check"><i class="bi bi-signpost-split"></i></span>
                             <span><strong>ORF Finder</strong><small>Open frames</small></span>
                         </label>
+                    </div>
+
+                    <div class="premium-login-note">
+                        {% if not is_authenticated %}
+                            <i class="bi bi-lock-fill"></i>
+                            <span>Premium tools are available to logged-in users.</span>
+                            <a href="{% url 'login' %}?next={% url 'analyzer' %}">Login</a>
+                            <span>or</span>
+                            <a href="{% url 'signup' %}?next={% url 'analyzer' %}">Register</a>
+                        {% else %}
+                            <i class="bi bi-unlock-fill"></i>
+                            <span>All premium tools are unlocked for your account.</span>
+                        {% endif %}
                     </div>
 
                     <div class="run-row">
