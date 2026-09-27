@@ -1,2 +1,6 @@
 Django>=6.1,<6.2
 requests>=2.32,<3
+dj-database-url>=2.2,<3
+psycopg2-binary>=2.9,<3
+whitenoise>=6.9,<7
+gunicorn>=23,<24
