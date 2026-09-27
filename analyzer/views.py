@@ -34,7 +34,7 @@ def analyzer_home(request):
 
     if request.method == "POST":
 
-        uploaded = request.FILES.get("fasta_file") or request.FILES.get("txt_file")
+        uploaded = request.FILES.get("sequence_file") or request.FILES.get("fasta_file") or request.FILES.get("txt_file")
         if uploaded:
             from .analysis.file_parser import parse_uploaded_file
             sequence = parse_uploaded_file(uploaded)
