@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from .validators import validate_sequence
 from .services import run_selected_analysis
@@ -7,6 +8,23 @@ from django.http import HttpResponse
 from .report_generator import generate_txt_report
 from .fasta_generator import generate_fasta
 
+FREE_TOOLS = {
+    "dna_to_rna",
+    "rna_to_dna",
+    "gc_content",
+    "atgc_count",
+    "complement",
+    "reverse_complement",
+    "translation",
+    "motif",
+    "orf",
+}
+
+PREMIUM_TOOLS = {
+    "blast",
+}
+
+@login_required
 def analyzer_home(request):
 
     context = {
@@ -31,6 +49,12 @@ def analyzer_home(request):
         if result["valid"]:
 
             selected_tools = request.POST.getlist("analysis")
+
+            allowed_tools = FREE_TOOLS | PREMIUM_TOOLS
+            selected_tools = [tool for tool in selected_tools if tool in allowed_tools]
+
+            if "blast" in selected_tools and not request.user.is_authenticated:
+                selected_tools.remove("blast")
             motif = request.POST.get("motif", "").strip()
             
             context["analysis_results"] = run_selected_analysis(
@@ -47,6 +71,9 @@ def analyzer_home(request):
             request.session["sequence_type"] = result["type"]
             request.session["results"] = context["analysis_results"]
             
+            context["premium_tools"] = PREMIUM_TOOLS
+        context["is_authenticated"] = request.user.is_authenticated
+
     return render(
         request,
         "analyzer/analyzer.html",
