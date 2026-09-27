@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: genomez
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "python -m gunicorn genomez.wsgi:application"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: genomez-db
+          property: connectionString
+
+databases:
+  - name: genomez-db
+    plan: free
+    databaseName: genomez
+    user: genomez
