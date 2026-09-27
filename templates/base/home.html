@@ -40,11 +40,15 @@
 
                 <div class="hero-buttons">
 
-                    <a href="/analyzer" class="btn btn-primary btn-lg me-3">
+                    <button
+                        type="button"
+                        class="btn btn-primary btn-lg me-3"
+                        data-bs-toggle="modal"
+                        data-bs-target="#analysisChoiceModal">
 
                         Start Analysis
 
-                    </a>
+                    </button>
 
                     <a href="#features" class="btn btn-outline-success btn-lg">
 
@@ -567,5 +571,90 @@
     </div>
 
 </footer>
+
+
+
+
+<!-- ===========================
+     ANALYSIS CHOICE MODAL
+=========================== -->
+
+<div class="modal fade"
+     id="analysisChoiceModal"
+     tabindex="-1"
+     aria-labelledby="analysisChoiceModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content border-0 rounded-4 shadow">
+
+            <div class="modal-header border-0 px-4 pt-4">
+
+                <div>
+                    <span class="section-tag">Choose Workspace</span>
+
+                    <h4 class="modal-title mt-2"
+                        id="analysisChoiceModalLabel">
+
+                        What would you like to analyze?
+
+                    </h4>
+                </div>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+
+            </div>
+
+            <div class="modal-body px-4 pb-4">
+
+                <a href="/analyzer/"
+                   class="workspace-choice">
+
+                    <div class="workspace-choice-icon genomics-icon">
+                        <i class="bi bi-dna"></i>
+                    </div>
+
+                    <div>
+                        <h5>Genomics</h5>
+                        <p>
+                            DNA/RNA sequence analysis, conversion,
+                            GC content, motifs, ORFs and translation.
+                        </p>
+                    </div>
+
+                    <i class="bi bi-arrow-right workspace-arrow"></i>
+
+                </a>
+
+                <a href="/proteomics/"
+                   class="workspace-choice">
+
+                    <div class="workspace-choice-icon proteomics-icon">
+                        <i class="bi bi-diagram-3"></i>
+                    </div>
+
+                    <div>
+                        <h5>Proteomics</h5>
+                        <p>
+                            Protein sequence analysis and
+                            database-backed identification.
+                        </p>
+                    </div>
+
+                    <i class="bi bi-arrow-right workspace-arrow"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 {% endblock %}
