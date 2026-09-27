@@ -7,6 +7,7 @@ from .analysis.atgc_count import atgc_count
 from .analysis.translation import translate
 from .analysis.motif import find_motif
 from .analysis.orf import find_orfs
+from .analysis.identification import identify_sequence
 
 
 def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
@@ -191,6 +192,31 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
 
                 results["ORF Finder"] = {
                     "display": output,
+                    "raw": None,
+                    "format": "text"
+                }
+
+        elif tool == "blast":
+
+            if sequence_type != "DNA":
+                results["Sequence Identification"] = {
+                    "display": "Sequence identification currently uses NCBI BLASTN and requires a DNA sequence.",
+                    "raw": None,
+                    "format": "text"
+                }
+            else:
+                identification = identify_sequence(sequence)
+
+                if identification["error"]:
+                    display = f"Identification error: {identification['error']}"
+                else:
+                    display = identification.get(
+                        "message",
+                        "NCBI BLAST request submitted."
+                    )
+
+                results["Sequence Identification"] = {
+                    "display": display,
                     "raw": None,
                     "format": "text"
                 }
