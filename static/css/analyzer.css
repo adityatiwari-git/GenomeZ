@@ -1113,3 +1113,20 @@
         flex:1;
     }
 }
+
+
+/* Analysis-first genomics layout */
+.compact-summary-after{
+    margin-top:18px;
+}
+
+.workspace-layout{
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+    align-items:stretch;
+}
+
+@media(max-width:900px){
+    .workspace-layout{
+        grid-template-columns:1fr;
+    }
+}
