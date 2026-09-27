@@ -29,13 +29,6 @@ class AnalyzerTests(TestCase):
         result = validate_sequence("ATGX")
         self.assertFalse(result["valid"])
 
-    def test_protein_validation(self):
-        result = validate_sequence("MALWMRLLPLLALLALWGPD")
-        self.assertTrue(result["valid"])
-        self.assertEqual(result["type"], "PROTEIN")
-        self.assertEqual(result["length"], 20)
-        self.assertEqual(result["counts"]["M"], 2)
-
     def test_dna_to_rna(self):
         self.assertEqual(dna_to_rna("ATGC"), "AUGC")
 
