@@ -27,5 +27,6 @@ urlpatterns = [
     path("accounts/", include("accounts.urls")),
 
     path("analyzer/", include("analyzer.urls")),
+    path("proteomics/", include("proteomics.urls")),
 
 ]
