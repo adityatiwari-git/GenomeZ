@@ -24,11 +24,9 @@ def generate_txt_report(sequence, sequence_type, results):
     report.append("-" * 50)
 
     for title, value in results.items():
-
         report.append("")
         report.append(title)
         report.append("-" * len(title))
-
         report.append(value["display"])
 
-
+    return "\n".join(report)
