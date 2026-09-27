@@ -1,11 +1,44 @@
 {% extends 'base/app_base.html' %}
 
+{% block title %}GenomeZ Login{% endblock %}
+
 {% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <span class="auth-kicker">GenomeZ Account</span>
+        <h1>Welcome back</h1>
+        <p>Log in to unlock all GenomeZ premium analysis tools.</p>
 
-<div class="container py-5 text-center">
+        {% if form.non_field_errors %}
+            <div class="auth-alert error">{{ form.non_field_errors }}</div>
+        {% endif %}
 
-    <h1>Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
 
+            <div class="auth-field">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {{ form.username.errors }}
+            </div>
+
+            <div class="auth-field">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+                {{ form.password.errors }}
+            </div>
+
+            <button type="submit" class="auth-submit">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Login
+            </button>
+        </form>
+
+        <p class="auth-footer">
+            Don't have an account?
+            <a href="{% url 'signup' %}{% if next %}?next={{ next|urlencode }}{% endif %}">Create one</a>
+        </p>
+    </div>
 </div>
-
 {% endblock %}
