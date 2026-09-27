@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'core',
     'analyzer',
     'accounts',
+    'proteomics',
 ]
 
 MIDDLEWARE = [
