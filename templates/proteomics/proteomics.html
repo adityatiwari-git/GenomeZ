@@ -1,0 +1,92 @@
+{% extends 'base/app_base.html' %}
+
+{% block title %}GenomeZ Proteomics{% endblock %}
+
+{% block content %}
+
+<div class="analyzer-page">
+    <div class="analyzer-shell">
+
+        <div class="analyzer-header">
+            <div>
+                <span class="analyzer-kicker">Protein Workspace</span>
+                <h1>GenomeZ Proteomics</h1>
+                <p>Analyze protein sequences and identify matching proteins using biological databases.</p>
+            </div>
+
+            <div class="analyzer-status">
+                <span class="status-dot"></span>
+                Proteomics
+            </div>
+        </div>
+
+        <section class="panel">
+            <div class="panel-heading">
+                <div>
+                    <span class="panel-label">01</span>
+                    <h2>Protein Sequence</h2>
+                    <p>Paste a protein sequence or upload a FASTA/TXT file.</p>
+                </div>
+                <i class="bi bi-diagram-3 panel-icon"></i>
+            </div>
+
+            <textarea
+                class="sequence-box"
+                rows="10"
+                placeholder="Example: MALWMRLLPLLALLALWGPD..."></textarea>
+
+            <div class="upload-actions">
+                <label class="upload-button">
+                    <i class="bi bi-file-earmark-arrow-up"></i>
+                    Upload FASTA
+                    <input type="file" accept=".fasta,.fa" hidden>
+                </label>
+
+                <label class="upload-button upload-button-success">
+                    <i class="bi bi-file-earmark-text"></i>
+                    Upload TXT
+                    <input type="file" accept=".txt" hidden>
+                </label>
+            </div>
+        </section>
+
+        <div class="bottom-grid">
+            <section class="panel">
+                <div class="panel-heading compact">
+                    <div>
+                        <span class="panel-label">02</span>
+                        <h2>Protein Analysis</h2>
+                        <p>Protein-specific analysis tools will appear here.</p>
+                    </div>
+                    <i class="bi bi-bezier2 panel-icon"></i>
+                </div>
+
+                <div class="empty-summary">
+                    <i class="bi bi-tools"></i>
+                    <h3>Proteomics tools</h3>
+                    <p>Amino-acid composition, molecular weight, physicochemical properties and more will be added here.</p>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-heading compact">
+                    <div>
+                        <span class="panel-label">03</span>
+                        <h2>Sequence Identification</h2>
+                        <p>Database-backed identification will be added here.</p>
+                    </div>
+                    <i class="bi bi-search panel-icon"></i>
+                </div>
+
+                <div class="empty-summary">
+                    <i class="bi bi-database"></i>
+                    <h3>NCBI / UniProt</h3>
+                    <p>Protein similarity search and database matches will be connected here.</p>
+                </div>
+            </section>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
