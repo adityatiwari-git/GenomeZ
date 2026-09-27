@@ -48,19 +48,28 @@
 
         </a>
 
-        <div class="ms-auto d-flex align-items-center gap-3">
+        <div class="ms-auto d-flex align-items-center gap-2">
 
-            <a href="{% url 'home' %}" class="btn btn-light">
-
+            <a href="{% url 'home' %}" class="btn btn-light px-3">
                 Website
-
             </a>
 
-            <a href="{% url 'analyzer' %}" class="btn btn-primary">
-
+            <a href="{% url 'analyzer' %}" class="btn btn-primary px-3">
                 Analyzer
-
             </a>
+
+            {% if request.user.is_authenticated %}
+                <span class="auth-user-label d-none d-md-inline">
+                    <i class="bi bi-person-circle"></i> {{ request.user.username }}
+                </span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-secondary px-3">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-primary px-3">
+                    Login
+                </a>
+            {% endif %}
 
         </div>
 
