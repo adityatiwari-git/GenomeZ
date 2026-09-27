@@ -182,55 +182,55 @@
 
                 <div class="tool-grid">
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="dna_to_rna">
+                        <input type="checkbox" name="analysis" value="dna_to_rna" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-arrow-right"></i></span>
                         <span><strong>DNA → RNA</strong><small>Convert DNA to RNA</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="rna_to_dna">
+                        <input type="checkbox" name="analysis" value="rna_to_dna" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-arrow-left-right"></i></span>
                         <span><strong>RNA → DNA</strong><small>Convert RNA to DNA</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="gc_content">
+                        <input type="checkbox" name="analysis" value="gc_content" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-percent"></i></span>
                         <span><strong>GC Content</strong><small>Calculate GC percentage</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="atgc_count">
+                        <input type="checkbox" name="analysis" value="atgc_count" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-grid-3x3-gap"></i></span>
                         <span><strong>Base Count</strong><small>Count A/T/U/G/C bases</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="complement">
+                        <input type="checkbox" name="analysis" value="complement" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-bezier2"></i></span>
                         <span><strong>Complement</strong><small>Generate complement</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="reverse_complement">
+                        <input type="checkbox" name="analysis" value="reverse_complement" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-arrow-repeat"></i></span>
                         <span><strong>Reverse Complement</strong><small>Reverse and complement</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="translation">
+                        <input type="checkbox" name="analysis" value="translation" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-bezier"></i></span>
                         <span><strong>Protein Translation</strong><small>Translate codons</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="motif">
+                        <input type="checkbox" name="analysis" value="motif" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-search"></i></span>
                         <span><strong>Motif Finder</strong><small>Find motif positions</small></span>
                     </label>
 
                     <label class="tool-card">
-                        <input type="checkbox" name="analysis" value="orf">
+                        <input type="checkbox" name="analysis" value="orf" data-nucleotide-only="true">
                         <span class="tool-check"><i class="bi bi-signpost-split"></i></span>
                         <span><strong>ORF Finder</strong><small>Find open reading frames</small></span>
                     </label>
@@ -430,6 +430,23 @@ function downloadResultAsTxt(id, title) {
 
     URL.revokeObjectURL(url);
 }
+
+function updateProteinTools() {
+    const typeText = document.querySelector(".summary-status.success");
+    const isProtein = typeText && typeText.innerText.includes("PROTEIN");
+
+    document.querySelectorAll('input[name="analysis"][data-nucleotide-only="true"]').forEach(input => {
+        input.disabled = isProtein;
+
+        if (isProtein) {
+            input.checked = false;
+        }
+
+        input.closest(".tool-card")?.classList.toggle("tool-disabled", isProtein);
+    });
+}
+
+updateProteinTools();
 
 function showCopyToast() {
     const toastElement = document.getElementById("copyToast");
