@@ -76,3 +76,8 @@ class AnalyzerTests(TestCase):
         self.assertEqual(result[0]["start"], 4)
         self.assertEqual(result[0]["end"], 12)
         self.assertEqual(result[0]["frame"], 1)
+
+
+    def test_analyzer_requires_login(self):
+        response = self.client.get("/analyzer/")
+        self.assertEqual(response.status_code, 302)
