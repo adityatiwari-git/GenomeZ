@@ -1130,3 +1130,58 @@
         grid-template-columns:1fr;
     }
 }
+
+
+/* ===========================
+   PREMIUM TOOL ACCESS
+=========================== */
+
+.premium-tool-card{
+    position:relative;
+}
+
+.premium-tool-card:has(input:disabled){
+    opacity:.72;
+    cursor:pointer;
+}
+
+.premium-tool-card:has(input:disabled):hover{
+    transform:none;
+    border-color:#e2e8f0;
+    box-shadow:none;
+}
+
+.premium-tool-card input:disabled{
+    pointer-events:none;
+}
+
+.premium-lock{
+    margin-left:auto;
+    color:#94a3b8;
+    font-size:13px;
+}
+
+.premium-login-note{
+    display:flex;
+    align-items:center;
+    justify-content:flex-end;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:12px;
+    color:#64748b;
+    font-size:12px;
+}
+
+.premium-login-note i{
+    color:#f59e0b;
+}
+
+.premium-login-note a{
+    color:#2563eb;
+    font-weight:700;
+    text-decoration:none;
+}
+
+.premium-login-note a:hover{
+    text-decoration:underline;
+}
