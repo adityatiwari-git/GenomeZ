@@ -713,3 +713,11 @@ FOOTER
         font-size:13px;
     }
 }
+
+
+/* Workspace icons */
+.dna-logo{
+    font-size:28px;
+    line-height:1;
+    filter:saturate(1.15);
+}
