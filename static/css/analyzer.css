@@ -964,3 +964,152 @@
         grid-template-columns:repeat(3,1fr);
     }
 }
+
+
+/* ===========================
+   COMPACT GENOMICS WORKSPACE
+=========================== */
+
+.analyzer-header-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.workspace-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1.25fr) minmax(340px,.75fr);
+    gap:18px;
+}
+
+.compact-sequence-box{
+    min-height:190px;
+}
+
+.compact-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-top:14px;
+}
+
+.motif-input{
+    flex:1;
+    min-height:43px;
+    border-radius:12px;
+}
+
+.compact-upload{
+    white-space:nowrap;
+}
+
+.compact-file-status{
+    margin-top:10px;
+}
+
+.compact-summary-stats{
+    margin-top:12px;
+}
+
+.compact-composition{
+    margin-top:14px;
+    padding-top:14px;
+}
+
+.compact-composition .base-box{
+    padding:11px 8px;
+}
+
+.compact-empty-summary{
+    min-height:220px;
+}
+
+.compact-tools-panel{
+    padding:20px 22px;
+}
+
+.compact-tool-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:10px;
+}
+
+.compact-tool-card{
+    padding:11px 12px;
+    gap:9px;
+    border-radius:12px;
+}
+
+.compact-tool-card .tool-check{
+    width:32px;
+    height:32px;
+    flex-basis:32px;
+    border-radius:9px;
+}
+
+.compact-tool-card strong{
+    font-size:13px;
+}
+
+.compact-tool-card small{
+    font-size:11px;
+}
+
+.compact-tools-panel .run-row{
+    margin-top:14px;
+}
+
+.compact-results-grid{
+    gap:12px;
+}
+
+.compact-result-card .result-card-header{
+    padding:13px 14px;
+}
+
+.compact-result-card .result-card-header h3{
+    font-size:14px;
+}
+
+.compact-result-body{
+    min-height:125px;
+    padding:13px 14px;
+}
+
+.compact-result-card .result-card-actions{
+    padding:10px 12px;
+}
+
+@media(max-width:1000px){
+    .workspace-layout{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:850px){
+    .compact-tool-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:600px){
+    .compact-row{
+        flex-wrap:wrap;
+    }
+
+    .motif-input{
+        flex:1 1 100%;
+    }
+
+    .compact-tool-grid{
+        grid-template-columns:1fr;
+    }
+
+    .analyzer-header-actions{
+        width:100%;
+    }
+
+    .analyzer-header-actions > *{
+        flex:1;
+    }
+}
