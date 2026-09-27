@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
 from .validators import validate_sequence
@@ -54,7 +55,7 @@ def analyzer_home(request):
             selected_tools = [tool for tool in selected_tools if tool in allowed_tools]
 
             if "blast" in selected_tools and not request.user.is_authenticated:
-                selected_tools.remove("blast")
+                return redirect(f"{reverse('login')}?next={reverse('analyzer')}")
             motif = request.POST.get("motif", "").strip()
             
             context["analysis_results"] = run_selected_analysis(
