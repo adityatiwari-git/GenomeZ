@@ -1,9 +1,12 @@
+from pathlib import Path
+
+from django.conf import settings
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
+
 from .validators import validate_sequence
 from .services import run_selected_analysis
-
-from django.http import HttpResponse
 from .report_generator import generate_txt_report
 from .fasta_generator import generate_fasta
 
@@ -23,88 +26,104 @@ PREMIUM_TOOLS = {
     "blast",
 }
 
-def analyzer_home(request):
-
-    context = {
-    "result": None,
-    "uploaded_sequence": ""
+SAMPLE_FILES = {
+    "dna": "sample.fasta",
+    "rna": "sample_rna.fasta",
 }
 
+
+def load_sample_sequence(sample_key):
+    filename = SAMPLE_FILES.get(sample_key)
+    if not filename:
+        return ""
+
+    path = Path(settings.BASE_DIR) / filename
+    if not path.exists():
+        return ""
+
+    text = path.read_text(encoding="utf-8")
+    return "".join(
+        line.strip()
+        for line in text.splitlines()
+        if line.strip() and not line.startswith(">")
+    )
+
+
+def analyzer_home(request):
+    context = {
+        "result": None,
+        "uploaded_sequence": "",
+        "is_authenticated": request.user.is_authenticated,
+    }
+
     if request.method == "POST":
+        selected_sample = request.POST.get("sample_sequence", "")
+        action = request.POST.get("action", "analyze")
 
-        uploaded = request.FILES.get("sequence_file") or request.FILES.get("fasta_file") or request.FILES.get("txt_file")
-        if uploaded:
-            from .analysis.file_parser import parse_uploaded_file
-            sequence = parse_uploaded_file(uploaded)
+        if selected_sample:
+            sequence = load_sample_sequence(selected_sample)
         else:
-            sequence = request.POST.get("sequence", "")
+            uploaded = (
+                request.FILES.get("sequence_file")
+                or request.FILES.get("fasta_file")
+                or request.FILES.get("txt_file")
+            )
+            if uploaded:
+                from .analysis.file_parser import parse_uploaded_file
+                sequence = parse_uploaded_file(uploaded)
+            else:
+                sequence = request.POST.get("sequence", "")
 
-# ADD THIS LINE
         context["uploaded_sequence"] = sequence
+
+        if action == "load_sample":
+            return render(request, "analyzer/analyzer.html", context)
+
         result = validate_sequence(sequence)
         context["result"] = result
-        
+
         if result["valid"]:
-
             selected_tools = request.POST.getlist("analysis")
-
             allowed_tools = FREE_TOOLS | PREMIUM_TOOLS
             selected_tools = [tool for tool in selected_tools if tool in allowed_tools]
 
             if "blast" in selected_tools and not request.user.is_authenticated:
                 return redirect(f"{reverse('login')}?next={reverse('analyzer')}")
+
             motif = request.POST.get("motif", "").strip()
-            
+
             context["analysis_results"] = run_selected_analysis(
                 result["sequence"],
                 result["type"],
-                selected_tools, 
-                motif)
-            
-            from .download_utils import SEQUENCE_ANALYSES
+                selected_tools,
+                motif,
+            )
 
+            from .download_utils import SEQUENCE_ANALYSES
             context["sequence_analyses"] = SEQUENCE_ANALYSES
 
             request.session["sequence"] = result["sequence"]
             request.session["sequence_type"] = result["type"]
             request.session["results"] = context["analysis_results"]
-            
+
             context["premium_tools"] = PREMIUM_TOOLS
-        context["is_authenticated"] = request.user.is_authenticated
 
-    return render(
-        request,
-        "analyzer/analyzer.html",
-        context
-    )
-    
-    
+    return render(request, "analyzer/analyzer.html", context)
+
+
 def download_report(request):
-
     sequence = request.session.get("sequence")
     sequence_type = request.session.get("sequence_type")
     results = request.session.get("results")
 
-    report = generate_txt_report(
-        sequence,
-        sequence_type,
-        results
-    )
+    report = generate_txt_report(sequence, sequence_type, results)
 
-    response = HttpResponse(
-        report,
-        content_type="text/plain"
-    )
-
-    response["Content-Disposition"] = (
-        'attachment; filename="GenomeZ_Report.txt"'
-    )
-
+    response = HttpResponse(report, content_type="text/plain")
+    response["Content-Disposition"] = 'attachment; filename="GenomeZ_Report.txt"'
     return response
 
 
 def download_fasta(request, analysis):
-
     results = request.session.get("results", {})
 
     if analysis not in results:
@@ -115,21 +134,13 @@ def download_fasta(request, analysis):
     if result.get("format") != "sequence":
         return HttpResponse(
             "This analysis cannot be exported as FASTA.",
-            status=400
+            status=400,
         )
 
-    fasta = generate_fasta(
-        analysis.replace(" ", "_"),
-        result["raw"]
-    )
+    fasta = generate_fasta(analysis.replace(" ", "_"), result["raw"])
 
-    response = HttpResponse(
-        fasta,
-        content_type="text/plain"
-    )
-
+    response = HttpResponse(fasta, content_type="text/plain")
     response["Content-Disposition"] = (
         f'attachment; filename="{analysis.replace(" ", "_")}.fasta"'
     )
-
     return response
