@@ -48,6 +48,18 @@
                         rows="8"
                         placeholder="Paste DNA or RNA sequence...">{{ uploaded_sequence }}</textarea>
 
+                    <div class="sample-sequence-row">
+                        <select class="form-select" name="sample_sequence" aria-label="Choose a sample sequence">
+                            <option value="">Choose a sample sequence...</option>
+                            <option value="dna">DNA sample</option>
+                            <option value="rna">RNA sample</option>
+                        </select>
+                        <button type="submit" name="action" value="load_sample" class="secondary-button">
+                            <i class="bi bi-file-earmark-code"></i>
+                            Load Sample
+                        </button>
+                    </div>
+
                     <div class="compact-row">
                         <input
                             id="motif"
