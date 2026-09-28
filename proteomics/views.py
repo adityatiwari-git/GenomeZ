@@ -1,8 +1,10 @@
 import re
 from collections import Counter
+from pathlib import Path
 from urllib.parse import quote
 
 import requests
+from django.conf import settings
 from django.shortcuts import render
 
 
@@ -68,7 +70,12 @@ def uniprot_search(sequence):
     }
 
     try:
-        response = requests.get(url, params=params, timeout=15, headers={"User-Agent": "GenomeZ/1.0"})
+        response = requests.get(
+            url,
+            params=params,
+            timeout=15,
+            headers={"User-Agent": "GenomeZ/1.0"},
+        )
         response.raise_for_status()
     except requests.RequestException as exc:
         return {"error": f"UniProt search failed: {exc}"}
@@ -79,10 +86,12 @@ def uniprot_search(sequence):
 
     headers = lines[0].split("\t")
     matches = []
+
     for line in lines[1:]:
         values = line.split("\t")
         row = dict(zip(headers, values))
         accession = row.get("Entry", "")
+
         matches.append({
             "accession": accession,
             "id": row.get("Entry Name", ""),
@@ -97,13 +106,30 @@ def uniprot_search(sequence):
 
 
 def build_blast_url(sequence):
-    return "https://blast.ncbi.nlm.nih.gov/Blast.cgi?PROGRAM=blastp&PAGE_TYPE=BlastSearch&QUERY=" + quote(sequence)
+    return (
+        "https://blast.ncbi.nlm.nih.gov/Blast.cgi?"
+        "PROGRAM=blastp&PAGE_TYPE=BlastSearch&QUERY=" + quote(sequence)
+    )
+
+
+def load_sample_sequence():
+    path = Path(settings.BASE_DIR) / "sample_protein.fasta"
+    if not path.exists():
+        return ""
+
+    return clean_sequence(path.read_text(encoding="utf-8"))
 
 
 def proteomics_home(request):
     context = {"sequence": ""}
 
     if request.method == "POST":
+        action = request.POST.get("action", "analyze")
+
+        if action == "load_sample":
+            context["sequence"] = load_sample_sequence()
+            return render(request, "proteomics/proteomics.html", context)
+
         sequence = request.POST.get("sequence", "")
         uploaded = request.FILES.get("sequence_file")
 
@@ -124,7 +150,7 @@ def proteomics_home(request):
             context["blast_url"] = build_blast_url(sequence)
             context["search"] = uniprot_search(sequence)
 
-            if request.POST.get("action") == "analyze":
+            if action == "analyze":
                 request.session["last_protein"] = sequence
 
     elif request.session.get("last_protein"):
