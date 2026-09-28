@@ -9,7 +9,6 @@ from .validators import validate_sequence
 from .services import run_selected_analysis
 from .report_generator import generate_txt_report
 from .fasta_generator import generate_fasta
-from .analysis.jev import get_recommendation
 
 FREE_TOOLS = {
     "dna_to_rna",
@@ -108,13 +107,6 @@ def analyzer_home(request):
             request.session["results"] = context["analysis_results"]
 
             context["premium_tools"] = PREMIUM_TOOLS
-
-            if request.POST.get("smart_recommendation") == "1":
-                context["jev_recommendation"] = get_recommendation(
-                    result["sequence"],
-                    result["type"],
-                    context["analysis_results"],
-                )
 
     return render(request, "analyzer/analyzer.html", context)
 
