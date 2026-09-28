@@ -180,48 +180,11 @@
                     </div>
 
                     <div class="run-row">
-                        <label class="smart-recommendation-toggle">
-                            <input type="checkbox" name="smart_recommendation" value="1">
-                            <span>
-                                <i class="bi bi-stars"></i>
-                                Smart Recommendation
-                                <small>Use Jev to suggest the next useful analysis.</small>
-                            </span>
-                        </label>
-
                         <button class="run-button" type="submit">
                             <i class="bi bi-play-fill"></i>
                             Run Analysis
                         </button>
                     </div>
-
-                    {% if jev_recommendation %}
-                    <div class="jev-recommendation">
-                        <div class="jev-recommendation-header">
-                            <div>
-                                <span class="panel-label">JEV</span>
-                                <h3>Smart Analysis Recommendation</h3>
-                            </div>
-                            <i class="bi bi-stars"></i>
-                        </div>
-
-                        {% if jev_recommendation.available %}
-                            <p>
-                                Suggested next action:
-                                <strong>{{ jev_recommendation.next_action|default:"General analysis" }}</strong>
-                            </p>
-
-                            {% if jev_recommendation.database_search %}
-                                <p>
-                                    Database search:
-                                    <strong>{{ jev_recommendation.database_search|yesno:"Recommended,Not recommended" }}</strong>
-                                </p>
-                            {% endif %}
-                        {% else %}
-                            <p>{{ jev_recommendation.message }}</p>
-                        {% endif %}
-                    </div>
-                    {% endif %}
                 </section>
 
             </div>
