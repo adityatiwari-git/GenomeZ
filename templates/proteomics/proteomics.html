@@ -41,6 +41,17 @@
                     rows="10"
                     placeholder="Example: MALWMRLLPLLALLALWGPD...">{{ sequence }}</textarea>
 
+                <div class="sample-sequence-row">
+                    <select class="form-select" name="sample_sequence" aria-label="Choose a sample protein sequence">
+                        <option value="">Choose a sample protein sequence...</option>
+                        <option value="protein">Protein sample</option>
+                    </select>
+                    <button type="submit" name="action" value="load_sample" class="secondary-button">
+                        <i class="bi bi-file-earmark-code"></i>
+                        Load Sample
+                    </button>
+                </div>
+
                 <div class="upload-actions">
                     <label class="upload-button">
                         <i class="bi bi-file-earmark-arrow-up"></i>
