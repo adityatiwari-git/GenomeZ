@@ -2,6 +2,7 @@ from datetime import datetime
 
 
 def generate_txt_report(sequence, sequence_type, results):
+    """Build a simple text report from the latest GenomeZ analysis."""
     report = [
         "=" * 50,
         "GenomeZ Analysis Report",
@@ -19,12 +20,12 @@ def generate_txt_report(sequence, sequence_type, results):
         "-" * 50,
     ]
 
-    for title, value in results.items():
+    for title, result in results.items():
         report.extend([
             "",
             title,
             "-" * len(title),
-            value["display"],
+            result["display"],
         ])
 
     return "\n".join(report)
