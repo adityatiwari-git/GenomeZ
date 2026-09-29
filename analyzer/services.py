@@ -11,6 +11,7 @@ from .analysis.translation import translate
 
 
 def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
+    """Run the tools selected by the user and collect their results."""
     results = {}
 
     for tool in selected_tools:
@@ -52,10 +53,10 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
                     "format": "text",
                 }
             else:
-                comp = complement(sequence, sequence_type)
+                result = complement(sequence, sequence_type)
                 results["Complement"] = {
-                    "display": comp,
-                    "raw": comp,
+                    "display": result,
+                    "raw": result,
                     "format": "sequence",
                 }
 
@@ -67,17 +68,22 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
                     "format": "text",
                 }
             else:
-                rev = reverse_complement(sequence, sequence_type)
+                result = reverse_complement(sequence, sequence_type)
                 results["Reverse Complement"] = {
-                    "display": rev,
-                    "raw": rev,
+                    "display": result,
+                    "raw": result,
                     "format": "sequence",
                 }
 
         elif tool == "gc_content":
-            gc = gc_content(sequence)
+            gc_result = gc_content(sequence)
+            display = (
+                f"GC: {gc_result['GC %']}%\n"
+                f"Other: {gc_result['Other %']}%"
+            )
+
             results["GC Content"] = {
-                "display": f"GC: {gc['GC %']}%\nOther: {gc['Other %']}%",
+                "display": display,
                 "raw": None,
                 "format": "text",
             }
@@ -133,15 +139,20 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
                     "format": "text",
                 }
             else:
-                result = find_motif(sequence, motif)
+                motif_result = find_motif(sequence, motif)
 
-                if result["Matches"] == 0:
-                    display = f"Motif: {result['Motif']}\nNo matches found."
-                else:
-                    positions = ", ".join(map(str, result["Positions"]))
+                if motif_result["Matches"] == 0:
                     display = (
-                        f"Motif: {result['Motif']}\n"
-                        f"Matches: {result['Matches']}\n"
+                        f"Motif: {motif_result['Motif']}\n"
+                        "No matches found."
+                    )
+                else:
+                    positions = ", ".join(
+                        map(str, motif_result["Positions"])
+                    )
+                    display = (
+                        f"Motif: {motif_result['Motif']}\n"
+                        f"Matches: {motif_result['Matches']}\n"
                         f"Positions: {positions}"
                     )
 
@@ -162,9 +173,10 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
                 }
             else:
                 output = ""
-                for i, orf in enumerate(orfs, start=1):
+
+                for index, orf in enumerate(orfs, start=1):
                     output += (
-                        f"ORF {i}\n"
+                        f"ORF {index}\n"
                         f"Frame : {orf['frame']}\n"
                         f"Start : {orf['start']}\n"
                         f"End : {orf['end']}\n"
