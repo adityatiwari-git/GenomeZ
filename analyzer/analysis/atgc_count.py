@@ -1,4 +1,5 @@
 def atgc_count(sequence):
+    """Count the common bases and return the sequence length."""
     sequence = sequence.upper()
 
     return {
