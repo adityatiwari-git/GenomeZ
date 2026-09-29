@@ -1,28 +1,17 @@
-"""
-GenomeZ
-Protein Translation Module
-"""
-
 CODON_TABLE = {
-    "UUU": "F", "UUC": "F",
-    "UUA": "L", "UUG": "L",
+    "UUU": "F", "UUC": "F", "UUA": "L", "UUG": "L",
     "CUU": "L", "CUC": "L", "CUA": "L", "CUG": "L",
-    "AUU": "I", "AUC": "I", "AUA": "I",
-    "AUG": "M",
+    "AUU": "I", "AUC": "I", "AUA": "I", "AUG": "M",
     "GUU": "V", "GUC": "V", "GUA": "V", "GUG": "V",
     "UCU": "S", "UCC": "S", "UCA": "S", "UCG": "S",
     "AGU": "S", "AGC": "S",
     "CCU": "P", "CCC": "P", "CCA": "P", "CCG": "P",
     "ACU": "T", "ACC": "T", "ACA": "T", "ACG": "T",
     "GCU": "A", "GCC": "A", "GCA": "A", "GCG": "A",
-    "UAU": "Y", "UAC": "Y",
-    "CAU": "H", "CAC": "H",
-    "CAA": "Q", "CAG": "Q",
-    "AAU": "N", "AAC": "N",
-    "AAA": "K", "AAG": "K",
-    "GAU": "D", "GAC": "D",
-    "GAA": "E", "GAG": "E",
-    "UGU": "C", "UGC": "C",
+    "UAU": "Y", "UAC": "Y", "CAU": "H", "CAC": "H",
+    "CAA": "Q", "CAG": "Q", "AAU": "N", "AAC": "N",
+    "AAA": "K", "AAG": "K", "GAU": "D", "GAC": "D",
+    "GAA": "E", "GAG": "E", "UGU": "C", "UGC": "C",
     "UGG": "W",
     "CGU": "R", "CGC": "R", "CGA": "R", "CGG": "R",
     "AGA": "R", "AGG": "R",
@@ -32,13 +21,7 @@ CODON_TABLE = {
 
 
 def translate(sequence, sequence_type):
-    """
-    Translate DNA/RNA starting from the first start codon.
-
-    The reading frame begins at the first ATG/AUG found.
-    Translation stops at the first in-frame stop codon.
-    """
-
+    """Translate a DNA or RNA sequence from its first start codon."""
     sequence = sequence.upper()
 
     if sequence_type == "DNA":
@@ -51,7 +34,7 @@ def translate(sequence, sequence_type):
             "Protein": "",
             "Codons": 0,
             "Stop Codon": "No",
-            "Start Found": "No"
+            "Start Found": "No",
         }
 
     protein = []
@@ -73,5 +56,5 @@ def translate(sequence, sequence_type):
         "Protein": "".join(protein),
         "Codons": codons_processed,
         "Stop Codon": "Yes" if stop_found else "No",
-        "Start Found": "Yes"
+        "Start Found": "Yes",
     }
