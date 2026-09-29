@@ -87,7 +87,6 @@ def analyzer_home(request):
         action = request.POST.get("action", "analyze")
         context["uploaded_sequence"] = sequence
 
-        # Loading a sample only fills the sequence box. It does not run analysis.
         if action == "load_sample":
             return render(request, "analyzer/analyzer.html", context)
 
@@ -102,29 +101,56 @@ def analyzer_home(request):
                 if tool in allowed_tools
             ]
 
-            # BLAST is the only premium analyzer tool at the moment.
             if "blast" in selected_tools and not request.user.is_authenticated:
                 login_url = reverse("login")
                 analyzer_url = reverse("analyzer")
                 return redirect(f"{login_url}?next={analyzer_url}")
 
             motif = request.POST.get("motif", "").strip()
+            motif_mode = request.POST.get("motif_mode", "discover")
+
+            def read_int(name, default):
+                try:
+                    return int(request.POST.get(name, default))
+                except (TypeError, ValueError):
+                    return default
+
+            motif_min_length = read_int("motif_min_length", 3)
+            motif_max_length = read_int("motif_max_length", 8)
+            motif_min_occurrences = read_int("motif_min_occurrences", 2)
+
+            motif_min_length = max(1, min(motif_min_length, 20))
+            motif_max_length = max(motif_min_length, min(motif_max_length, 20))
+            motif_min_occurrences = max(2, min(motif_min_occurrences, 1000))
 
             analysis_results = run_selected_analysis(
                 validation["sequence"],
                 validation["type"],
                 selected_tools,
                 motif,
+                motif_mode,
+                motif_min_length,
+                motif_max_length,
+                motif_min_occurrences,
             )
 
             context["analysis_results"] = analysis_results
             context["sequence_analyses"] = SEQUENCE_ANALYSES
             context["premium_tools"] = PREMIUM_TOOLS
+            context["motif_mode"] = motif_mode
+            context["motif_min_length"] = motif_min_length
+            context["motif_max_length"] = motif_max_length
+            context["motif_min_occurrences"] = motif_min_occurrences
 
-            # Keep the latest analysis in the session for the download views.
             request.session["sequence"] = validation["sequence"]
             request.session["sequence_type"] = validation["type"]
             request.session["results"] = analysis_results
+
+    else:
+        context["motif_mode"] = "discover"
+        context["motif_min_length"] = 3
+        context["motif_max_length"] = 8
+        context["motif_min_occurrences"] = 2
 
     return render(request, "analyzer/analyzer.html", context)
 
