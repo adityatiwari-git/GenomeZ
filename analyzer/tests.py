@@ -1,19 +1,18 @@
 from django.test import TestCase
 
-from .validators import validate_sequence
-from .analysis.dna_to_rna import dna_to_rna
-from .analysis.rna_to_dna import rna_to_dna
-from .analysis.gc_content import gc_content
 from .analysis.atgc_count import atgc_count
 from .analysis.complement import complement
-from .analysis.reverse_complement import reverse_complement
-from .analysis.translation import translate
+from .analysis.dna_to_rna import dna_to_rna
+from .analysis.gc_content import gc_content
 from .analysis.motif import find_motif
 from .analysis.orf import find_orfs
+from .analysis.reverse_complement import reverse_complement
+from .analysis.rna_to_dna import rna_to_dna
+from .analysis.translation import translate
+from .validators import validate_sequence
 
 
 class AnalyzerTests(TestCase):
-
     def test_analyzer_is_public(self):
         response = self.client.get("/analyzer/")
         self.assertEqual(response.status_code, 200)
