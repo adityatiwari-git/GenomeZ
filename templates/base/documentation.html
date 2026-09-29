@@ -1,0 +1,816 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<style>
+    .documentation-page {
+        background: #f8fafc;
+        padding: 70px 0;
+    }
+
+    .documentation-hero {
+        background: linear-gradient(135deg, #0d6efd, #198754);
+        color: white;
+        padding: 55px 0;
+    }
+
+    .documentation-hero h1 {
+        font-weight: 800;
+    }
+
+    .documentation-hero p {
+        max-width: 850px;
+        margin: 15px auto 0;
+        opacity: 0.92;
+    }
+
+    .documentation-sidebar {
+        position: sticky;
+        top: 95px;
+    }
+
+    .documentation-sidebar .list-group-item {
+        border: 0;
+        padding: 10px 14px;
+        background: transparent;
+    }
+
+    .documentation-sidebar a {
+        color: #495057;
+        text-decoration: none;
+    }
+
+    .documentation-sidebar a:hover {
+        color: #0d6efd;
+    }
+
+    .doc-section {
+        background: white;
+        border-radius: 16px;
+        padding: 32px;
+        margin-bottom: 24px;
+        box-shadow: 0 4px 18px rgba(15, 23, 42, 0.05);
+    }
+
+    .doc-section h2 {
+        color: #172033;
+        font-weight: 700;
+        margin-bottom: 18px;
+    }
+
+    .doc-section h3 {
+        color: #0d6efd;
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-top: 25px;
+    }
+
+    .doc-section p,
+    .doc-section li {
+        color: #4b5563;
+        line-height: 1.75;
+    }
+
+    .doc-section code {
+        background: #f1f5f9;
+        padding: 2px 6px;
+        border-radius: 5px;
+    }
+
+    .doc-example {
+        background: #111827;
+        color: #e5e7eb;
+        padding: 18px;
+        border-radius: 10px;
+        overflow-x: auto;
+        font-family: monospace;
+        margin: 15px 0;
+    }
+
+    .doc-table {
+        margin-top: 15px;
+    }
+
+    .doc-table th {
+        background: #f1f5f9;
+    }
+
+    .doc-note {
+        border-left: 4px solid #0d6efd;
+        background: #eff6ff;
+        padding: 15px 18px;
+        border-radius: 8px;
+        margin: 18px 0;
+    }
+
+    .doc-warning {
+        border-left: 4px solid #f59e0b;
+        background: #fffbeb;
+        padding: 15px 18px;
+        border-radius: 8px;
+        margin: 18px 0;
+    }
+
+    .tool-card {
+        border: 1px solid #e5e7eb;
+        border-radius: 12px;
+        padding: 18px;
+        height: 100%;
+    }
+
+    .tool-card h4 {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 991px) {
+        .documentation-sidebar {
+            position: static;
+            margin-bottom: 25px;
+        }
+    }
+</style>
+
+<section class="documentation-hero text-center">
+    <div class="container">
+        <span class="badge bg-light text-primary rounded-pill px-3 py-2">GenomeZ Documentation</span>
+        <h1 class="mt-3">GenomeZ Documentation</h1>
+        <p>
+            A complete guide to the Genomics and Proteomics workspaces,
+            the concepts behind each tool, their uses, workflows and limitations.
+        </p>
+    </div>
+</section>
+
+<section class="documentation-page">
+    <div class="container">
+        <div class="row g-4">
+
+            <aside class="col-lg-3">
+                <div class="documentation-sidebar">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">On this page</h6>
+                            <div class="list-group list-group-flush small">
+                                <a class="list-group-item" href="#overview">1. What is GenomeZ?</a>
+                                <a class="list-group-item" href="#separation">2. Genomics vs Proteomics</a>
+                                <a class="list-group-item" href="#sequences">3. Sequence Types</a>
+                                <a class="list-group-item" href="#input">4. Input & Validation</a>
+                                <a class="list-group-item" href="#fasta">5. FASTA</a>
+                                <a class="list-group-item" href="#genomics">6. Genomics Workspace</a>
+                                <a class="list-group-item" href="#dna-rna">7. DNA → RNA</a>
+                                <a class="list-group-item" href="#rna-dna">8. RNA → DNA</a>
+                                <a class="list-group-item" href="#gc">9. GC Content</a>
+                                <a class="list-group-item" href="#base-count">10. Base Count</a>
+                                <a class="list-group-item" href="#complement">11. Complement</a>
+                                <a class="list-group-item" href="#reverse">12. Reverse Complement</a>
+                                <a class="list-group-item" href="#translation">13. Translation</a>
+                                <a class="list-group-item" href="#motif">14. Motif Finder</a>
+                                <a class="list-group-item" href="#orf">15. ORF Finder</a>
+                                <a class="list-group-item" href="#blastn">16. Sequence Identification</a>
+                                <a class="list-group-item" href="#access">17. Access Model</a>
+                                <a class="list-group-item" href="#proteomics">18. Proteomics</a>
+                                <a class="list-group-item" href="#protein-properties">19–23. Protein Tools</a>
+                                <a class="list-group-item" href="#mapping">24. Tool Map</a>
+                                <a class="list-group-item" href="#workflow">25. Workflow</a>
+                                <a class="list-group-item" href="#architecture">26. Architecture</a>
+                                <a class="list-group-item" href="#interpretation">27. Interpretation</a>
+                                <a class="list-group-item" href="#limitations">28. Limitations</a>
+                                <a class="list-group-item" href="#examples">29. Examples</a>
+                                <a class="list-group-item" href="#summary">30. Summary</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="col-lg-9">
+
+                <div class="doc-section" id="overview">
+                    <h2>1. What is GenomeZ?</h2>
+                    <p>
+                        GenomeZ is a browser-based bioinformatics platform for working with
+                        nucleotide and protein sequences. It combines sequence-analysis
+                        algorithms, file handling, authentication and selected external
+                        biological database searches in one interface.
+                    </p>
+                    <p>
+                        The basic workflow is:
+                        <strong>enter or upload a sequence → validate it → choose an analysis
+                        → inspect the result → export or continue working.</strong>
+                    </p>
+                    <div class="row g-3 mt-2">
+                        <div class="col-md-4"><div class="tool-card"><h4>Bioinformatics</h4><p class="mb-0">Sequence concepts and algorithms.</p></div></div>
+                        <div class="col-md-4"><div class="tool-card"><h4>Web Engineering</h4><p class="mb-0">Python, Django, HTML, CSS and Bootstrap.</p></div></div>
+                        <div class="col-md-4"><div class="tool-card"><h4>External Resources</h4><p class="mb-0">NCBI BLAST and UniProt workflows.</p></div></div>
+                    </div>
+                </div>
+
+                <div class="doc-section" id="separation">
+                    <h2>2. Why are Genomics and Proteomics separated?</h2>
+                    <p>
+                        GenomeZ separates the platform into two workspaces because DNA/RNA
+                        and proteins are different biological sequence types and are analyzed
+                        using different concepts.
+                    </p>
+
+                    <h3>Genomics</h3>
+                    <p>
+                        Genomics focuses on DNA and RNA, nucleotides, genes, coding regions,
+                        motifs, reading frames and nucleotide composition.
+                    </p>
+
+                    <h3>Proteomics</h3>
+                    <p>
+                        Proteomics focuses on proteins, amino acids, protein composition,
+                        molecular weight, hydrophobicity and protein identification.
+                    </p>
+
+                    <div class="doc-note">
+                        <strong>Why not one analyzer?</strong><br>
+                        Nucleotide sequences use a different alphabet and biological logic
+                        from protein sequences. Separating the workspaces makes the interface
+                        clearer and prevents nucleotide-specific operations from being applied
+                        to proteins.
+                    </div>
+                </div>
+
+                <div class="doc-section" id="sequences">
+                    <h2>3. Sequence Types</h2>
+                    <h3>DNA</h3>
+                    <p>DNA uses the nucleotide alphabet A, T, G and C.</p>
+                    <div class="doc-example">ATGCGTACCGTA</div>
+
+                    <h3>RNA</h3>
+                    <p>RNA uses U instead of T.</p>
+                    <div class="doc-example">AUGCGUACCGUA</div>
+
+                    <h3>Protein</h3>
+                    <p>
+                        Proteins are chains of amino acids represented using the standard
+                        one-letter amino-acid alphabet.
+                    </p>
+                    <div class="doc-example">MKWVTFISLLLLFSSAYSRGVFRRDTHKSEIAHRFKDLGE</div>
+                </div>
+
+                <div class="doc-section" id="input">
+                    <h2>4. Input and Validation</h2>
+                    <p>GenomeZ accepts sequences by pasting them into the analyzer or uploading FASTA/TXT files.</p>
+                    <ul>
+                        <li>Whitespace is removed.</li>
+                        <li>Input is converted to uppercase.</li>
+                        <li>Unsupported characters are rejected.</li>
+                        <li>Mixed T/U nucleotide input is rejected.</li>
+                        <li>DNA or RNA type is determined.</li>
+                        <li>Sequence length and base counts are calculated.</li>
+                        <li>GC% and AT%/AU% are calculated.</li>
+                    </ul>
+                    <div class="doc-note">
+                        Validation is important because the analysis functions expect valid biological sequence input.
+                    </div>
+                </div>
+
+                <div class="doc-section" id="fasta">
+                    <h2>5. FASTA Files</h2>
+                    <p>
+                        FASTA is a common text format for biological sequences. A FASTA record
+                        contains an identifier line beginning with <code>&gt;</code> followed by the sequence.
+                    </p>
+                    <div class="doc-example">&gt;sample_sequence
+ATGCGTACCGTAGCTAGC</div>
+                    <p>
+                        GenomeZ can load FASTA/TXT input and clean the sequence before analysis.
+                        FASTA is especially useful when working with sequences obtained from biological databases.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="genomics">
+                    <h2>6. Genomics Workspace</h2>
+                    <p>The Genomics analyzer currently provides:</p>
+                    <ol>
+                        <li>DNA → RNA</li>
+                        <li>RNA → DNA</li>
+                        <li>GC Content</li>
+                        <li>Base Count</li>
+                        <li>Complement</li>
+                        <li>Reverse Complement</li>
+                        <li>Protein Translation</li>
+                        <li>Motif Finder</li>
+                        <li>ORF Finder</li>
+                        <li>Sequence Identification using NCBI BLASTN</li>
+                    </ol>
+                </div>
+
+                <div class="doc-section" id="dna-rna">
+                    <h2>7. DNA → RNA</h2>
+                    <p>
+                        This tool converts a DNA sequence into an RNA representation by replacing T with U.
+                    </p>
+                    <div class="doc-example">DNA: ATGCCGTA
+RNA: AUGCCGUA</div>
+                    <p>
+                        This represents the sequence-level relationship between DNA and RNA notation.
+                        It does not simulate promoter recognition, RNA polymerase activity, RNA processing,
+                        splicing or regulation.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="rna-dna">
+                    <h2>8. RNA → DNA</h2>
+                    <p>
+                        This tool converts RNA notation to DNA notation by replacing U with T.
+                    </p>
+                    <div class="doc-example">RNA: AUGCCGUA
+DNA: ATGCCGTA</div>
+                    <p>
+                        This is a sequence conversion and is not a simulation of biological reverse transcription.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="gc">
+                    <h2>9. GC Content</h2>
+                    <p>
+                        GC content is the percentage of nucleotides that are G or C.
+                    </p>
+                    <div class="doc-example">GC% = ((G + C) / sequence length) × 100</div>
+                    <p>
+                        Example: for <code>ATGCGC</code>, G = 2, C = 2 and length = 6,
+                        giving a GC content of approximately 66.67%.
+                    </p>
+                    <p>
+                        GC content is useful for describing sequence composition and comparing
+                        nucleotide regions. It does not by itself identify a gene or determine function.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="base-count">
+                    <h2>10. Base Count / Nucleotide Composition</h2>
+                    <p>
+                        Base Count reports the number of individual nucleotides in the sequence.
+                    </p>
+                    <div class="doc-example">AATGCC
+
+A = 2
+T = 1
+G = 1
+C = 2</div>
+                    <p>
+                        Base composition provides the raw counts used by other sequence statistics,
+                        including GC content.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="complement">
+                    <h2>11. Complement</h2>
+                    <p>
+                        Complementary bases pair according to the biological base-pairing rules.
+                    </p>
+                    <table class="table table-bordered doc-table">
+                        <thead><tr><th>DNA</th><th>Complement</th></tr></thead>
+                        <tbody>
+                            <tr><td>A</td><td>T</td></tr>
+                            <tr><td>T</td><td>A</td></tr>
+                            <tr><td>G</td><td>C</td></tr>
+                            <tr><td>C</td><td>G</td></tr>
+                        </tbody>
+                    </table>
+                    <div class="doc-example">Original:   ATGC
+Complement: TACG</div>
+                    <p>
+                        The tool changes each nucleotide to its paired base without reversing the order.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="reverse">
+                    <h2>12. Reverse Complement</h2>
+                    <p>
+                        Reverse Complement first generates the complement and then reverses the result.
+                    </p>
+                    <div class="doc-example">Original:          ATGC
+Complement:       TACG
+Reverse Complement: GCAT</div>
+                    <p>
+                        Reverse complements are common in strand-aware sequence analysis,
+                        primer design, motif analysis and genome sequence processing.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="translation">
+                    <h2>13. Protein Translation</h2>
+                    <p>
+                        Translation converts a nucleotide coding sequence into an amino-acid sequence
+                        using the genetic code. Three nucleotides form one codon.
+                    </p>
+                    <div class="doc-example">DNA: ATG GCT TTT
+RNA: AUG GCU UUU
+Protein: M A F</div>
+
+                    <h3>How GenomeZ performs translation</h3>
+                    <ol>
+                        <li>Accept DNA or RNA.</li>
+                        <li>Convert DNA notation to RNA notation when required.</li>
+                        <li>Search for the first supported start codon.</li>
+                        <li>Start translation from that position.</li>
+                        <li>Read the sequence in groups of three.</li>
+                        <li>Translate codons into amino acids.</li>
+                        <li>Stop at the first supported stop codon.</li>
+                    </ol>
+
+                    <h3>Start and stop codons</h3>
+                    <p>Standard RNA start codon: <code>AUG</code>. DNA equivalent: <code>ATG</code>.</p>
+                    <p>RNA stop codons: <code>UAA</code>, <code>UAG</code>, <code>UGA</code>.</p>
+                    <p>DNA stop codons: <code>TAA</code>, <code>TAG</code>, <code>TGA</code>.</p>
+
+                    <div class="doc-warning">
+                        Translation of a sequence does not prove that a gene is expressed or that the resulting protein exists biologically.
+                    </div>
+                </div>
+
+                <div class="doc-section" id="motif">
+                    <h2>14. Motif Finder</h2>
+                    <p>
+                        A sequence motif is a short recurring pattern in a biological sequence.
+                        GenomeZ allows the user to enter a motif and search for its occurrences.
+                    </p>
+                    <h3>Reports</h3>
+                    <ul>
+                        <li>Requested motif</li>
+                        <li>Number of matches</li>
+                        <li>Match positions</li>
+                    </ul>
+                    <div class="doc-example">Sequence: ATGCGATGAAATG
+Motif:    ATG</div>
+                    <p>
+                        Motif searches are useful for sequence inspection and preliminary exploration.
+                        A motif occurrence alone does not establish biological function.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="orf">
+                    <h2>15. ORF Finder</h2>
+                    <p>
+                        ORF stands for <strong>Open Reading Frame</strong>. An ORF is a stretch of
+                        nucleotide sequence that can be read as codons in a particular reading frame,
+                        generally beginning with a start codon and ending at a stop codon.
+                    </p>
+
+                    <div class="doc-example">ATG | XXX | XXX | XXX | TAA
+ ^                         ^
+ start                     stop</div>
+
+                    <h3>Reading frames</h3>
+                    <p>
+                        A nucleotide sequence can be divided into codons using different offsets.
+                        A single strand has three possible reading frames. The opposite strand
+                        can also be considered through its reverse complement.
+                    </p>
+
+                    <h3>What GenomeZ reports</h3>
+                    <ul>
+                        <li>Frame</li>
+                        <li>Start position</li>
+                        <li>End position</li>
+                        <li>ORF length</li>
+                        <li>ORF sequence</li>
+                    </ul>
+
+                    <h3>Why is ORF finding useful?</h3>
+                    <p>
+                        ORF detection is an initial computational step for exploring possible
+                        protein-coding regions. It can help with gene-sequence exercises,
+                        coding-region exploration and preparing candidate sequences for translation.
+                    </p>
+
+                    <div class="doc-warning">
+                        An ORF is a computational sequence pattern, not proof that a functional gene exists.
+                        Real gene annotation normally requires additional evidence such as homology,
+                        genomic context and experimental or annotation evidence.
+                    </div>
+                </div>
+
+                <div class="doc-section" id="blastn">
+                    <h2>16. Sequence Identification with NCBI BLASTN</h2>
+                    <p>
+                        Sequence identification asks: <strong>What known biological sequences are similar to this sequence?</strong>
+                    </p>
+                    <p>
+                        GenomeZ implements this feature using NCBI BLASTN.
+                        BLAST stands for <strong>Basic Local Alignment Search Tool</strong>.
+                    </p>
+
+                    <h3>GenomeZ workflow</h3>
+                    <div class="doc-example">DNA sequence
+      ↓
+NCBI BLASTN
+      ↓
+nt database
+      ↓
+RID
+      ↓
+Short polling cycle
+      ↓
+BLAST XML
+      ↓
+GenomeZ parses results</div>
+
+                    <p>The current integration uses:</p>
+                    <ul>
+                        <li>Program: <code>blastn</code></li>
+                        <li>Database: <code>nt</code></li>
+                        <li>Result format: XML</li>
+                    </ul>
+
+                    <p>
+                        GenomeZ parses returned BLAST XML and extracts top-hit information such as
+                        accession/title and reported alignment statistics where available.
+                    </p>
+
+                    <div class="doc-note">
+                        Sequence Identification is protected behind authentication because it depends on an external biological database and network service.
+                    </div>
+
+                    <div class="doc-warning">
+                        The current implementation uses a short synchronous polling cycle. If NCBI has not completed
+                        the job within that window, GenomeZ may report that the job is still processing.
+                    </div>
+                </div>
+
+                <div class="doc-section" id="access">
+                    <h2>17. Free vs Authenticated Genomics Tools</h2>
+                    <table class="table table-hover table-bordered doc-table">
+                        <thead><tr><th>Tool</th><th>Guest</th><th>Logged in</th></tr></thead>
+                        <tbody>
+                            <tr><td>DNA → RNA</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>RNA → DNA</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>GC Content</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Base Count</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Complement</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Reverse Complement</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Translation</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Motif Finder</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>ORF Finder</td><td>Yes</td><td>Yes</td></tr>
+                            <tr><td>Sequence Identification / BLASTN</td><td>No</td><td>Yes</td></tr>
+                        </tbody>
+                    </table>
+                    <p>There is currently no paid subscription system. Authentication uses Django's built-in user system.</p>
+                </div>
+
+                <div class="doc-section" id="proteomics">
+                    <h2>18. Proteomics Workspace</h2>
+                    <p>
+                        The Proteomics workspace accepts protein sequences rather than DNA/RNA.
+                    </p>
+                    <ul>
+                        <li>Protein sequence validation</li>
+                        <li>FASTA/TXT upload</li>
+                        <li>Sequence cleaning</li>
+                        <li>Protein length</li>
+                        <li>Average molecular weight</li>
+                        <li>Hydrophobic-residue percentage</li>
+                        <li>Amino-acid composition</li>
+                        <li>Exact-sequence UniProt search</li>
+                        <li>UniProt result links</li>
+                        <li>NCBI BLASTP launch</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section" id="protein-properties">
+                    <h2>19–23. Protein Analysis Tools</h2>
+
+                    <h3>19. Protein Sequence Validation</h3>
+                    <p>
+                        Protein input is cleaned and checked against the standard amino-acid
+                        symbols supported by the application. Protein sequences should not be
+                        passed through nucleotide-specific operations such as GC Content or Reverse Complement.
+                    </p>
+
+                    <h3>20. Protein Length</h3>
+                    <p>
+                        Protein length is the number of amino-acid residues in the sequence.
+                    </p>
+                    <div class="doc-example">MKWV
+Length = 4 amino acids</div>
+
+                    <h3>21. Average Molecular Weight</h3>
+                    <p>
+                        GenomeZ calculates an approximate sequence-derived average molecular weight
+                        from amino-acid composition. It is an estimate and not an experimental mass measurement.
+                    </p>
+
+                    <h3>22. Hydrophobic Percentage</h3>
+                    <p>
+                        GenomeZ calculates the percentage of residues belonging to its implemented
+                        hydrophobic residue set:
+                    </p>
+                    <div class="doc-example">A, I, L, M, F, W, Y, V</div>
+                    <p>
+                        Hydrophobicity is relevant to protein folding, internal hydrophobic cores
+                        and membrane-associated regions. GenomeZ provides a simple composition-based
+                        percentage rather than a full hydropathy-profile prediction.
+                    </p>
+
+                    <h3>23. Amino-Acid Composition</h3>
+                    <p>The composition tool counts amino acids in the protein sequence.</p>
+                    <div class="doc-example">Sequence: MAAK
+
+A = 2
+M = 1
+K = 1</div>
+                    <p>
+                        Composition gives a basic description of a protein and can help compare
+                        sequences or inspect unusual amino-acid distributions.
+                    </p>
+
+                    <h3>UniProt Exact-Sequence Search</h3>
+                    <p>
+                        UniProt is a major biological resource for protein sequence and annotation information.
+                        GenomeZ can use UniProt for an exact-sequence search.
+                    </p>
+                    <p>
+                        An exact-sequence lookup is different from a broad similarity search:
+                        it asks whether the supplied protein sequence matches a sequence represented
+                        in the UniProt resource.
+                    </p>
+
+                    <h3>NCBI BLASTP</h3>
+                    <p>
+                        BLASTP searches a protein query against protein sequence databases to find
+                        similar sequences. GenomeZ currently provides a direct NCBI BLASTP launch
+                        from the Proteomics workspace rather than rendering the complete BLASTP result internally.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="mapping">
+                    <h2>24. Genomics vs Proteomics Tool Map</h2>
+                    <div class="table-responsive">
+                        <table class="table table-bordered doc-table">
+                            <thead>
+                                <tr><th>Biological question</th><th>Workspace</th><th>Tool</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Convert DNA to RNA</td><td>Genomics</td><td>DNA → RNA</td></tr>
+                                <tr><td>Convert RNA to DNA notation</td><td>Genomics</td><td>RNA → DNA</td></tr>
+                                <tr><td>Measure GC percentage</td><td>Genomics</td><td>GC Content</td></tr>
+                                <tr><td>Count nucleotides</td><td>Genomics</td><td>Base Count</td></tr>
+                                <tr><td>Find complementary strand</td><td>Genomics</td><td>Complement</td></tr>
+                                <tr><td>Find reverse complement</td><td>Genomics</td><td>Reverse Complement</td></tr>
+                                <tr><td>Convert coding sequence to protein</td><td>Genomics</td><td>Translation</td></tr>
+                                <tr><td>Find short nucleotide patterns</td><td>Genomics</td><td>Motif Finder</td></tr>
+                                <tr><td>Find candidate coding regions</td><td>Genomics</td><td>ORF Finder</td></tr>
+                                <tr><td>Identify similar DNA sequences</td><td>Genomics</td><td>NCBI BLASTN</td></tr>
+                                <tr><td>Calculate protein length</td><td>Proteomics</td><td>Protein analysis</td></tr>
+                                <tr><td>Estimate molecular weight</td><td>Proteomics</td><td>Protein analysis</td></tr>
+                                <tr><td>Calculate hydrophobic percentage</td><td>Proteomics</td><td>Protein analysis</td></tr>
+                                <tr><td>Count amino acids</td><td>Proteomics</td><td>Composition</td></tr>
+                                <tr><td>Find exact protein records</td><td>Proteomics</td><td>UniProt</td></tr>
+                                <tr><td>Search similar protein sequences</td><td>Proteomics</td><td>NCBI BLASTP</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="doc-section" id="workflow">
+                    <h2>25. General Analysis Workflow</h2>
+                    <div class="doc-example">Sequence input
+      ↓
+Clean / parse
+      ↓
+Validate
+      ↓
+Determine DNA or RNA
+      ↓
+Select tool
+      ↓
+Authentication check when required
+      ↓
+Run analysis
+      ↓
+Generate structured result
+      ↓
+Display result
+      ↓
+Copy / export</div>
+
+                    <p>Proteomics follows a similar workflow:</p>
+                    <div class="doc-example">Protein input
+      ↓
+Clean / parse
+      ↓
+Validate amino acids
+      ↓
+Calculate sequence properties
+      ↓
+Optional external search
+      ↓
+Display results</div>
+                </div>
+
+                <div class="doc-section" id="architecture">
+                    <h2>26. Application Architecture</h2>
+                    <p>GenomeZ follows a conventional Django structure.</p>
+                    <div class="row g-3">
+                        <div class="col-md-6"><div class="tool-card"><h4>accounts/</h4><p class="mb-0">Signup, login, logout and authentication.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>analyzer/</h4><p class="mb-0">Genomics request flow, validation, services and analysis modules.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>analyzer/analysis/</h4><p class="mb-0">Individual sequence-analysis algorithms.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>proteomics/</h4><p class="mb-0">Protein analysis and external protein resources.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>core/</h4><p class="mb-0">Public website and documentation page.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>genomez/</h4><p class="mb-0">Django configuration and top-level routing.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>templates/</h4><p class="mb-0">HTML interface.</p></div></div>
+                        <div class="col-md-6"><div class="tool-card"><h4>static/</h4><p class="mb-0">CSS, images, videos and other static assets.</p></div></div>
+                    </div>
+                </div>
+
+                <div class="doc-section" id="interpretation">
+                    <h2>27. Biological Interpretation</h2>
+                    <p>GenomeZ performs sequence-level analysis.</p>
+                    <ul>
+                        <li>GC content is a composition statistic.</li>
+                        <li>An ORF is a computationally detected coding pattern.</li>
+                        <li>A motif is a sequence pattern.</li>
+                        <li>A BLAST hit is a sequence-similarity relationship.</li>
+                        <li>Molecular weight is a sequence-derived estimate.</li>
+                        <li>Hydrophobic percentage is a composition statistic.</li>
+                    </ul>
+                    <p>
+                        These outputs should not automatically be treated as definitive biological conclusions.
+                        Research interpretation normally considers sequence quality, organism/context,
+                        database annotations, alignment quality, statistical significance, literature and experimental evidence.
+                    </p>
+                </div>
+
+                <div class="doc-section" id="limitations">
+                    <h2>28. Important Limitations</h2>
+                    <ul>
+                        <li><strong>BLASTN:</strong> Current polling is short and synchronous, so a job may still be processing.</li>
+                        <li><strong>BLASTP:</strong> The current workflow launches NCBI BLASTP externally.</li>
+                        <li><strong>UniProt:</strong> Results depend on the external service and its current database.</li>
+                        <li><strong>ORF Finder:</strong> An ORF is not automatically a confirmed gene.</li>
+                        <li><strong>Motif Finder:</strong> A motif occurrence does not automatically establish biological function.</li>
+                        <li><strong>Translation:</strong> Translation does not automatically establish protein expression.</li>
+                        <li><strong>Protein properties:</strong> Calculated properties are sequence-derived estimates, not experimental measurements.</li>
+                    </ul>
+                </div>
+
+                <div class="doc-section" id="examples">
+                    <h2>29. Example Workflows</h2>
+
+                    <h3>Genomics example</h3>
+                    <div class="doc-example">Input:
+ATGAAAGGCTAA</div>
+                    <ol>
+                        <li>Validate and identify the sequence as DNA.</li>
+                        <li>Calculate base composition.</li>
+                        <li>Calculate GC content.</li>
+                        <li>Generate the complement.</li>
+                        <li>Generate the reverse complement.</li>
+                        <li>Translate the sequence.</li>
+                        <li>Search for ORFs.</li>
+                        <li>Search for a motif if required.</li>
+                        <li>Authenticated users can submit it to NCBI BLASTN.</li>
+                    </ol>
+
+                    <h3>Proteomics example</h3>
+                    <div class="doc-example">Input:
+MKWVTFISLL</div>
+                    <ol>
+                        <li>Validate the amino-acid sequence.</li>
+                        <li>Calculate length.</li>
+                        <li>Calculate amino-acid composition.</li>
+                        <li>Estimate molecular weight.</li>
+                        <li>Calculate hydrophobic percentage.</li>
+                        <li>Search for an exact sequence through UniProt.</li>
+                        <li>Launch NCBI BLASTP for similarity searching.</li>
+                    </ol>
+                </div>
+
+                <div class="doc-section" id="summary">
+                    <h2>30. Summary</h2>
+                    <p>
+                        GenomeZ provides a practical bridge between biological sequence concepts and software engineering.
+                    </p>
+                    <p>
+                        The <strong>Genomics</strong> workspace focuses on DNA/RNA operations such as
+                        composition, GC content, strand operations, DNA/RNA conversion, translation,
+                        motifs, ORFs and nucleotide sequence identification.
+                    </p>
+                    <p>
+                        The <strong>Proteomics</strong> workspace focuses on protein-specific properties
+                        and resources such as amino-acid composition, molecular weight, hydrophobicity,
+                        UniProt lookup and BLASTP.
+                    </p>
+                    <div class="doc-note">
+                        The separation exists because nucleotide and protein sequences use different alphabets,
+                        biological concepts, algorithms and search resources. GenomeZ therefore provides one platform
+                        while keeping the underlying biological workflows clearly separated.
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'analyzer' %}" class="btn btn-primary rounded-pill px-4 me-2">Open Genomics Analyzer</a>
+                        <a href="/proteomics/" class="btn btn-outline-success rounded-pill px-4">Open Proteomics</a>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+</section>
+{% endblock %}
