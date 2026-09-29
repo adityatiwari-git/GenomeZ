@@ -22,22 +22,24 @@ HYDROPHOBIC = set("AILMFWYV")
 
 
 def clean_sequence(text):
-    lines = []
+    """Remove FASTA headers, spaces, and formatting from uploaded text."""
+    sequence_lines = []
 
     for line in text.splitlines():
         line = line.strip()
-        if not line or line.startswith(">"):
-            continue
-        lines.append(line)
+        if line and not line.startswith(">"):
+            sequence_lines.append(line)
 
-    return re.sub(r"[^A-Za-z]", "", "".join(lines)).upper()
+    return re.sub(r"[^A-Za-z]", "", "".join(sequence_lines)).upper()
 
 
 def validate_protein(sequence):
+    """Check whether a cleaned sequence contains valid amino-acid letters."""
     if not sequence:
         return {"valid": False, "message": "Protein sequence is empty."}
 
     invalid = sorted(set(sequence) - VALID_AMINO_ACIDS)
+
     if invalid:
         return {
             "valid": False,
@@ -53,26 +55,36 @@ def validate_protein(sequence):
 
 
 def analyze_protein(sequence):
+    """Calculate basic composition, mass, and hydrophobicity information."""
     counts = Counter(sequence)
     length = len(sequence)
+
     molecular_weight = (
-        sum(AVERAGE_MASS[aa] for aa in sequence)
+        sum(AVERAGE_MASS[amino_acid] for amino_acid in sequence)
         - (length - 1) * 18.015
     )
-    hydrophobic_count = sum(aa in HYDROPHOBIC for aa in sequence)
+
+    hydrophobic_count = sum(
+        amino_acid in HYDROPHOBIC
+        for amino_acid in sequence
+    )
 
     return {
         "length": length,
         "molecular_weight": round(molecular_weight, 2),
-        "hydrophobic_percent": round((hydrophobic_count / length) * 100, 2),
+        "hydrophobic_percent": round(
+            (hydrophobic_count / length) * 100,
+            2,
+        ),
         "composition": {
-            aa: counts.get(aa, 0)
-            for aa in sorted(VALID_AMINO_ACIDS)
+            amino_acid: counts.get(amino_acid, 0)
+            for amino_acid in sorted(VALID_AMINO_ACIDS)
         },
     }
 
 
 def uniprot_search(sequence):
+    """Search UniProt for exact sequence matches."""
     url = "https://rest.uniprot.org/uniprotkb/search"
     params = {
         "query": f'"{sequence}"',
@@ -89,10 +101,11 @@ def uniprot_search(sequence):
             headers={"User-Agent": "GenomeZ/1.0"},
         )
         response.raise_for_status()
-    except requests.RequestException as exc:
-        return {"error": f"UniProt search failed: {exc}"}
+    except requests.RequestException as error:
+        return {"error": f"UniProt search failed: {error}"}
 
     lines = [line for line in response.text.splitlines() if line.strip()]
+
     if len(lines) < 2:
         return {"matches": []}
 
@@ -121,6 +134,7 @@ def uniprot_search(sequence):
 
 
 def build_blast_url(sequence):
+    """Create a link that opens NCBI BLASTP with the sequence."""
     return (
         "https://blast.ncbi.nlm.nih.gov/Blast.cgi?"
         "PROGRAM=blastp&PAGE_TYPE=BlastSearch&QUERY="
@@ -129,14 +143,18 @@ def build_blast_url(sequence):
 
 
 def load_sample_sequence():
-    path = Path(settings.BASE_DIR) / "sample_protein.fasta"
-    if not path.exists():
+    """Load the ready-to-use sample protein sequence."""
+    sample_path = Path(settings.BASE_DIR) / "sample_protein.fasta"
+
+    if not sample_path.exists():
         return ""
 
-    return clean_sequence(path.read_text(encoding="utf-8"))
+    content = sample_path.read_text(encoding="utf-8")
+    return clean_sequence(content)
 
 
 def proteomics_home(request):
+    """Show the protein analyzer and handle protein analysis requests."""
     context = {"sequence": ""}
 
     if request.method == "POST":
@@ -147,17 +165,18 @@ def proteomics_home(request):
             return render(request, "proteomics/proteomics.html", context)
 
         sequence = request.POST.get("sequence", "")
-        uploaded = request.FILES.get("sequence_file")
+        uploaded_file = request.FILES.get("sequence_file")
 
-        if uploaded:
+        if uploaded_file:
             try:
-                sequence = uploaded.read().decode("utf-8")
+                sequence = uploaded_file.read().decode("utf-8")
             except UnicodeDecodeError:
                 context["error"] = "The uploaded file could not be read as text."
                 return render(request, "proteomics/proteomics.html", context)
 
         sequence = clean_sequence(sequence)
         context["sequence"] = sequence
+
         validation = validate_protein(sequence)
         context["validation"] = validation
 
