@@ -5,6 +5,8 @@ from .views import analyze_protein, clean_sequence, validate_protein
 
 
 class ProteomicsTests(TestCase):
+    """Basic tests for the protein analyzer."""
+
     def test_proteomics_page(self):
         response = self.client.get(reverse("proteomics"))
         self.assertEqual(response.status_code, 200)
@@ -19,9 +21,10 @@ class ProteomicsTests(TestCase):
         self.assertEqual(result["length"], 8)
 
     def test_invalid_protein(self):
-        result = validate_protein("MK1VTF")
+        # Z is not one of the standard amino-acid letters accepted by GenomeZ.
+        result = validate_protein("MKZVTF")
         self.assertFalse(result["valid"])
-        self.assertIn("1", result["invalid"])
+        self.assertIn("Z", result["invalid"])
 
     def test_protein_analysis(self):
         result = analyze_protein("AAAA")
