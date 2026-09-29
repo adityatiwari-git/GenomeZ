@@ -1,24 +1,27 @@
 import re
 
+
 DNA_BASES = {"A", "T", "G", "C"}
 RNA_BASES = {"A", "U", "G", "C"}
 VALID_BASES = DNA_BASES | RNA_BASES
 
 
 def validate_sequence(sequence):
-    """Check a sequence and identify it as DNA or RNA."""
+    """Clean a sequence, check its bases, and identify DNA or RNA."""
     if not sequence:
         return {"valid": False, "message": "Sequence is empty."}
 
     sequence = re.sub(r"\s+", "", sequence.upper())
-    invalid = sorted(set(ch for ch in sequence if ch not in VALID_BASES))
+    invalid_bases = sorted(
+        {base for base in sequence if base not in VALID_BASES}
+    )
 
-    if invalid:
+    if invalid_bases:
         return {
             "valid": False,
             "sequence": sequence,
             "message": "Invalid sequence.",
-            "invalid": invalid,
+            "invalid": invalid_bases,
         }
 
     has_t = "T" in sequence
@@ -35,6 +38,7 @@ def validate_sequence(sequence):
         }
 
     sequence_type = "DNA" if has_t else "RNA"
+
     counts = {
         "A": sequence.count("A"),
         "T": sequence.count("T"),
@@ -44,13 +48,13 @@ def validate_sequence(sequence):
     }
 
     length = len(sequence)
-    gc = counts["G"] + counts["C"]
+    gc_count = counts["G"] + counts["C"]
 
     if sequence_type == "DNA":
-        other = counts["A"] + counts["T"]
+        other_count = counts["A"] + counts["T"]
         other_name = "AT"
     else:
-        other = counts["A"] + counts["U"]
+        other_count = counts["A"] + counts["U"]
         other_name = "AU"
 
     return {
@@ -59,7 +63,7 @@ def validate_sequence(sequence):
         "type": sequence_type,
         "length": length,
         "counts": counts,
-        "gc_percent": round((gc / length) * 100, 2),
-        "other_percent": round((other / length) * 100, 2),
+        "gc_percent": round((gc_count / length) * 100, 2),
+        "other_percent": round((other_count / length) * 100, 2),
         "other_name": other_name,
     }
