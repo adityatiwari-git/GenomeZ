@@ -60,15 +60,52 @@
                         </button>
                     </div>
 
-                    <div class="compact-row">
-                        <input
-                            id="motif"
-                            type="text"
-                            class="form-control motif-input"
-                            name="motif"
-                            placeholder="Motif (optional)"
-                            value="{{ request.POST.motif }}">
+                    <div class="motif-controls">
+                        <div class="motif-mode-tabs">
+                            <label>
+                                <input type="radio" name="motif_mode" value="discover" {% if motif_mode == "discover" %}checked{% endif %}>
+                                <span><i class="bi bi-stars"></i> Discover motifs automatically</span>
+                            </label>
+                            <label>
+                                <input type="radio" name="motif_mode" value="specific" {% if motif_mode == "specific" %}checked{% endif %}>
+                                <span><i class="bi bi-search"></i> Find a specific motif</span>
+                            </label>
+                        </div>
 
+                        <div class="motif-discovery-settings" id="motif-discovery-settings">
+                            <div class="motif-setting">
+                                <label for="motif-min-length">Min length</label>
+                                <input id="motif-min-length" type="number" name="motif_min_length"
+                                       min="1" max="20" value="{{ motif_min_length|default:3 }}">
+                            </div>
+                            <div class="motif-setting">
+                                <label for="motif-max-length">Max length</label>
+                                <input id="motif-max-length" type="number" name="motif_max_length"
+                                       min="1" max="20" value="{{ motif_max_length|default:8 }}">
+                            </div>
+                            <div class="motif-setting">
+                                <label for="motif-min-occurrences">Min occurrences</label>
+                                <input id="motif-min-occurrences" type="number" name="motif_min_occurrences"
+                                       min="2" max="1000" value="{{ motif_min_occurrences|default:2 }}">
+                            </div>
+                        </div>
+
+                        <div class="motif-specific-input" id="motif-specific-input">
+                            <input
+                                id="motif"
+                                type="text"
+                                class="form-control motif-input"
+                                name="motif"
+                                placeholder="Enter motif to find, e.g. ATG"
+                                value="{{ request.POST.motif }}">
+                        </div>
+
+                        <p class="motif-help" id="motif-help">
+                            Automatic discovery scans every exact substring in the selected length range and reports every pattern meeting the minimum occurrence threshold.
+                        </p>
+                    </div>
+
+                    <div class="compact-upload-row">
                         <label class="upload-button compact-upload">
                             <i class="bi bi-upload"></i>
                             Upload FASTA / TXT
@@ -138,7 +175,7 @@
                         <label class="tool-card compact-tool-card">
                             <input type="checkbox" name="analysis" value="motif">
                             <span class="tool-check"><i class="bi bi-search"></i></span>
-                            <span><strong>Motif Finder</strong><small>Positions</small></span>
+                            <span><strong>Motif Finder</strong><small>Discover or search</small></span>
                         </label>
 
                         {% if is_authenticated %}
@@ -319,7 +356,27 @@
 <script>
 const sequenceFileInput = document.querySelector('input[name="sequence_file"]');
 const fileInfo = document.getElementById("selected-file");
-const inputSource = document.getElementById("input-source");
+const motifModeInputs = document.querySelectorAll('input[name="motif_mode"]');
+const discoverySettings = document.getElementById("motif-discovery-settings");
+const specificInput = document.getElementById("motif-specific-input");
+const motifHelp = document.getElementById("motif-help");
+
+function updateMotifMode() {
+    const mode = document.querySelector('input[name="motif_mode"]:checked')?.value || "discover";
+    const discovery = mode === "discover";
+
+    discoverySettings?.classList.toggle("hidden", !discovery);
+    specificInput?.classList.toggle("hidden", discovery);
+
+    if (motifHelp) {
+        motifHelp.textContent = discovery
+            ? "Automatic discovery scans every exact substring in the selected length range and reports every pattern meeting the minimum occurrence threshold."
+            : "Enter one DNA/RNA pattern and GenomeZ will report every occurrence and its 1-based positions.";
+    }
+}
+
+motifModeInputs.forEach(input => input.addEventListener("change", updateMotifMode));
+updateMotifMode();
 
 function updateFile(input) {
     if (!fileInfo) return;
@@ -329,10 +386,6 @@ function updateFile(input) {
             '<i class="bi bi-file-earmark-check"></i><span><strong>' +
             input.files[0].name +
             '</strong> selected and ready.</span>';
-
-        if (inputSource) {
-            inputSource.textContent = input.files[0].name;
-        }
     }
 }
 
