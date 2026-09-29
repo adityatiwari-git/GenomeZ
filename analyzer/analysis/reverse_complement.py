@@ -1,14 +1,6 @@
-"""
-GenomeZ
-Reverse Complement Module
-"""
-
 from .complement import complement
 
 
 def reverse_complement(sequence, sequence_type):
-    """
-    Generate reverse complement of DNA/RNA.
-    """
-
+    """Return the reverse complement of a DNA or RNA sequence."""
     return complement(sequence, sequence_type)[::-1]
