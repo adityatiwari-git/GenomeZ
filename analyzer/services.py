@@ -3,14 +3,23 @@ from .analysis.complement import complement
 from .analysis.dna_to_rna import dna_to_rna
 from .analysis.gc_content import gc_content
 from .analysis.identification import identify_sequence
-from .analysis.motif import find_motif
+from .analysis.motif import discover_motifs, find_motif
 from .analysis.orf import find_orfs
 from .analysis.reverse_complement import reverse_complement
 from .analysis.rna_to_dna import rna_to_dna
 from .analysis.translation import translate
 
 
-def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
+def run_selected_analysis(
+    sequence,
+    sequence_type,
+    selected_tools,
+    motif="",
+    motif_mode="discover",
+    motif_min_length=3,
+    motif_max_length=8,
+    motif_min_occurrences=2,
+):
     """Run the tools selected by the user and collect their results."""
     results = {}
 
@@ -132,29 +141,67 @@ def run_selected_analysis(sequence, sequence_type, selected_tools, motif=""):
             }
 
         elif tool == "motif":
-            if not motif:
-                results["Motif Finder"] = {
-                    "display": "❌ Please enter a motif.",
-                    "raw": None,
-                    "format": "text",
-                }
-            else:
-                motif_result = find_motif(sequence, motif)
-
-                if motif_result["Matches"] == 0:
-                    display = (
-                        f"Motif: {motif_result['Motif']}\n"
-                        "No matches found."
-                    )
+            if motif_mode == "specific":
+                if not motif:
+                    results["Motif Finder"] = {
+                        "display": "❌ Please enter a motif.",
+                        "raw": None,
+                        "format": "text",
+                    }
                 else:
-                    positions = ", ".join(
-                        map(str, motif_result["Positions"])
-                    )
-                    display = (
-                        f"Motif: {motif_result['Motif']}\n"
-                        f"Matches: {motif_result['Matches']}\n"
-                        f"Positions: {positions}"
-                    )
+                    motif_result = find_motif(sequence, motif)
+
+                    if motif_result["Matches"] == 0:
+                        display = (
+                            f"Motif: {motif_result['Motif']}\n"
+                            "No matches found."
+                        )
+                    else:
+                        positions = ", ".join(
+                            map(str, motif_result["Positions"])
+                        )
+                        display = (
+                            f"Motif: {motif_result['Motif']}\n"
+                            f"Matches: {motif_result['Matches']}\n"
+                            f"Positions: {positions}"
+                        )
+
+                    results["Motif Finder"] = {
+                        "display": display,
+                        "raw": None,
+                        "format": "text",
+                    }
+            else:
+                discovered = discover_motifs(
+                    sequence,
+                    min_length=motif_min_length,
+                    max_length=motif_max_length,
+                    min_occurrences=motif_min_occurrences,
+                )
+
+                if not discovered:
+                    display = "No repeated motifs found with the selected settings."
+                else:
+                    lines = [
+                        "Mode: Automatic motif discovery",
+                        f"Length range: {motif_min_length}-{motif_max_length}",
+                        f"Minimum occurrences: {motif_min_occurrences}",
+                        f"Total motifs discovered: {len(discovered)}",
+                        "",
+                    ]
+
+                    for index, item in enumerate(discovered, start=1):
+                        positions = ", ".join(map(str, item["positions"]))
+                        lines.extend(
+                            [
+                                f"{index}. {item['motif']} "
+                                f"(length {item['length']})",
+                                f"   Matches: {item['matches']}",
+                                f"   Positions: {positions}",
+                            ]
+                        )
+
+                    display = "\n".join(lines)
 
                 results["Motif Finder"] = {
                     "display": display,
