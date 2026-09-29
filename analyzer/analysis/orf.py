@@ -5,35 +5,37 @@ STOP_CODONS = {
 
 
 def find_orfs(sequence, sequence_type):
+    """Find open reading frames that start and end with valid codons."""
     sequence = sequence.upper()
     start_codon = "ATG" if sequence_type == "DNA" else "AUG"
     stop_codons = STOP_CODONS[sequence_type]
     orfs = []
 
+    # Check all three possible reading frames.
     for frame in range(3):
-        i = frame
+        start_index = frame
 
-        while i <= len(sequence) - 3:
-            codon = sequence[i:i + 3]
+        while start_index <= len(sequence) - 3:
+            codon = sequence[start_index:start_index + 3]
 
             if codon == start_codon:
-                j = i + 3
+                end_index = start_index + 3
 
-                while j <= len(sequence) - 3:
-                    stop = sequence[j:j + 3]
+                while end_index <= len(sequence) - 3:
+                    stop_codon = sequence[end_index:end_index + 3]
 
-                    if stop in stop_codons:
+                    if stop_codon in stop_codons:
                         orfs.append({
-                            "start": i + 1,
-                            "end": j + 3,
-                            "length": j + 3 - i,
-                            "sequence": sequence[i:j + 3],
+                            "start": start_index + 1,
+                            "end": end_index + 3,
+                            "length": end_index + 3 - start_index,
+                            "sequence": sequence[start_index:end_index + 3],
                             "frame": frame + 1,
                         })
                         break
 
-                    j += 3
+                    end_index += 3
 
-            i += 3
+            start_index += 3
 
     return orfs
