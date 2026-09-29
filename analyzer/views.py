@@ -2,13 +2,14 @@ from pathlib import Path
 
 from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from .validators import validate_sequence
-from .services import run_selected_analysis
-from .report_generator import generate_txt_report
 from .fasta_generator import generate_fasta
+from .report_generator import generate_txt_report
+from .services import run_selected_analysis
+from .validators import validate_sequence
+
 
 FREE_TOOLS = {
     "dna_to_rna",
@@ -22,9 +23,7 @@ FREE_TOOLS = {
     "orf",
 }
 
-PREMIUM_TOOLS = {
-    "blast",
-}
+PREMIUM_TOOLS = {"blast"}
 
 SAMPLE_FILES = {
     "dna": "sample.fasta",
@@ -68,6 +67,7 @@ def analyzer_home(request):
                 or request.FILES.get("fasta_file")
                 or request.FILES.get("txt_file")
             )
+
             if uploaded:
                 from .analysis.file_parser import parse_uploaded_file
                 sequence = parse_uploaded_file(uploaded)
@@ -85,10 +85,15 @@ def analyzer_home(request):
         if result["valid"]:
             selected_tools = request.POST.getlist("analysis")
             allowed_tools = FREE_TOOLS | PREMIUM_TOOLS
-            selected_tools = [tool for tool in selected_tools if tool in allowed_tools]
+            selected_tools = [
+                tool for tool in selected_tools
+                if tool in allowed_tools
+            ]
 
             if "blast" in selected_tools and not request.user.is_authenticated:
-                return redirect(f"{reverse('login')}?next={reverse('analyzer')}")
+                return redirect(
+                    f"{reverse('login')}?next={reverse('analyzer')}"
+                )
 
             motif = request.POST.get("motif", "").strip()
 
@@ -105,7 +110,6 @@ def analyzer_home(request):
             request.session["sequence"] = result["sequence"]
             request.session["sequence_type"] = result["type"]
             request.session["results"] = context["analysis_results"]
-
             context["premium_tools"] = PREMIUM_TOOLS
 
     return render(request, "analyzer/analyzer.html", context)
