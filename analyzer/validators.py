@@ -6,28 +6,19 @@ VALID_BASES = DNA_BASES | RNA_BASES
 
 
 def validate_sequence(sequence):
-    """
-    Validate and identify a DNA or RNA sequence.
-    """
-
+    """Check a sequence and identify it as DNA or RNA."""
     if not sequence:
-        return {
-            "valid": False,
-            "message": "Sequence is empty."
-        }
+        return {"valid": False, "message": "Sequence is empty."}
 
     sequence = re.sub(r"\s+", "", sequence.upper())
-
-    invalid = sorted(
-        set(ch for ch in sequence if ch not in VALID_BASES)
-    )
+    invalid = sorted(set(ch for ch in sequence if ch not in VALID_BASES))
 
     if invalid:
         return {
             "valid": False,
             "sequence": sequence,
             "message": "Invalid sequence.",
-            "invalid": invalid
+            "invalid": invalid,
         }
 
     has_t = "T" in sequence
@@ -37,11 +28,13 @@ def validate_sequence(sequence):
         return {
             "valid": False,
             "sequence": sequence,
-            "message": "Sequence contains both T and U. Mixed DNA/RNA sequences are not supported."
+            "message": (
+                "Sequence contains both T and U. Mixed DNA/RNA sequences "
+                "are not supported."
+            ),
         }
 
     sequence_type = "DNA" if has_t else "RNA"
-
     counts = {
         "A": sequence.count("A"),
         "T": sequence.count("T"),
