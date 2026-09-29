@@ -479,13 +479,38 @@ A motif may represent a region of biological interest, such as a binding or regu
 
 GenomeZ allows a user to provide a motif and search for occurrences in the sequence.
 
-## What does it report?
+## Two search modes
 
-The tool reports:
+GenomeZ now supports two ways to use Motif Finder.
 
-- Requested motif
+### Automatic motif discovery
+
+This is the default mode for large sequences.
+
+Instead of requiring the user to guess motifs manually, GenomeZ scans every exact substring within a selected length range and reports every pattern that reaches the selected minimum occurrence count.
+
+The default settings are:
+
+- Minimum motif length: 3
+- Maximum motif length: 8
+- Minimum occurrences: 2
+
+The user can change these settings.
+
+For each discovered pattern, GenomeZ reports:
+
+- Motif
+- Length
 - Number of matches
-- Match positions
+- All 1-based positions
+
+Overlapping matches are included.
+
+This means the tool does not arbitrarily return only the most frequent few patterns. Every pattern meeting the selected discovery criteria is included in the result.
+
+### Specific motif search
+
+The original search mode remains available when the user already knows the pattern they want to investigate.
 
 Example:
 
@@ -497,7 +522,7 @@ Motif
 ATG
 ~~~
 
-The tool reports the occurrences found by its sequence search.
+The result reports the number of occurrences and their positions.
 
 ## Why is motif finding useful?
 
