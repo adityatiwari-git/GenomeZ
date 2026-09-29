@@ -5,7 +5,6 @@ from .views import analyze_protein, clean_sequence, validate_protein
 
 
 class ProteomicsTests(TestCase):
-
     def test_proteomics_page(self):
         response = self.client.get(reverse("proteomics"))
         self.assertEqual(response.status_code, 200)
