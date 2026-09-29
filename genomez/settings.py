@@ -1,11 +1,12 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
 import dj_database_url
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Environment variables are used so local development and Render can share settings.
 SECRET_KEY = os.environ.get("SECRET_KEY", "dev-only-secret-key")
 DEBUG = os.environ.get("DEBUG", "True").lower() == "true"
 
@@ -60,6 +61,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "genomez.wsgi.application"
 
 
+# SQLite is used locally; DATABASE_URL is used automatically when deployed.
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
