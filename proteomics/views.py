@@ -18,16 +18,18 @@ AVERAGE_MASS = {
     "T": 119.12, "W": 204.23, "Y": 181.19, "V": 117.15,
 }
 
-HYDROPHOBIC = set("AILMFWVYV")
+HYDROPHOBIC = set("AILMFWYV")
 
 
 def clean_sequence(text):
     lines = []
+
     for line in text.splitlines():
         line = line.strip()
         if not line or line.startswith(">"):
             continue
         lines.append(line)
+
     return re.sub(r"[^A-Za-z]", "", "".join(lines)).upper()
 
 
@@ -43,27 +45,37 @@ def validate_protein(sequence):
             "invalid": invalid,
         }
 
-    return {"valid": True, "sequence": sequence, "length": len(sequence)}
+    return {
+        "valid": True,
+        "sequence": sequence,
+        "length": len(sequence),
+    }
 
 
 def analyze_protein(sequence):
     counts = Counter(sequence)
     length = len(sequence)
-    molecular_weight = sum(AVERAGE_MASS[aa] for aa in sequence) - (length - 1) * 18.015
+    molecular_weight = (
+        sum(AVERAGE_MASS[aa] for aa in sequence)
+        - (length - 1) * 18.015
+    )
     hydrophobic_count = sum(aa in HYDROPHOBIC for aa in sequence)
 
     return {
         "length": length,
         "molecular_weight": round(molecular_weight, 2),
         "hydrophobic_percent": round((hydrophobic_count / length) * 100, 2),
-        "composition": {aa: counts.get(aa, 0) for aa in sorted(VALID_AMINO_ACIDS)},
+        "composition": {
+            aa: counts.get(aa, 0)
+            for aa in sorted(VALID_AMINO_ACIDS)
+        },
     }
 
 
 def uniprot_search(sequence):
     url = "https://rest.uniprot.org/uniprotkb/search"
     params = {
-        "query": f"\"{sequence}\"",
+        "query": f'"{sequence}"',
         "format": "tsv",
         "fields": "accession,id,protein_name,gene_names,organism_name,length",
         "size": 5,
@@ -99,7 +111,10 @@ def uniprot_search(sequence):
             "gene": row.get("Gene Names", ""),
             "organism": row.get("Organism", ""),
             "length": row.get("Length", ""),
-            "url": f"https://www.uniprot.org/uniprotkb/{accession}" if accession else "",
+            "url": (
+                f"https://www.uniprot.org/uniprotkb/{accession}"
+                if accession else ""
+            ),
         })
 
     return {"matches": matches}
@@ -108,7 +123,8 @@ def uniprot_search(sequence):
 def build_blast_url(sequence):
     return (
         "https://blast.ncbi.nlm.nih.gov/Blast.cgi?"
-        "PROGRAM=blastp&PAGE_TYPE=BlastSearch&QUERY=" + quote(sequence)
+        "PROGRAM=blastp&PAGE_TYPE=BlastSearch&QUERY="
+        + quote(sequence)
     )
 
 
