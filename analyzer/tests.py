@@ -13,6 +13,8 @@ from .validators import validate_sequence
 
 
 class AnalyzerTests(TestCase):
+    """Basic tests for the public analyzer and its bioinformatics tools."""
+
     def test_analyzer_is_public(self):
         response = self.client.get("/analyzer/")
         self.assertEqual(response.status_code, 200)
@@ -22,6 +24,7 @@ class AnalyzerTests(TestCase):
             "/analyzer/",
             {"sequence": "ATGC", "analysis": ["gc_content"]},
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "GC Content")
 
@@ -30,6 +33,7 @@ class AnalyzerTests(TestCase):
             "/analyzer/",
             {"sequence": "ATGC", "analysis": ["blast"]},
         )
+
         self.assertEqual(response.status_code, 302)
         self.assertIn("/accounts/login/", response["Location"])
 
