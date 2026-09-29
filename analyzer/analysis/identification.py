@@ -5,7 +5,7 @@ import requests
 
 
 def identify_sequence(sequence):
-    """Submit DNA to NCBI BLASTN and return a few top matches."""
+    """Send a DNA sequence to NCBI BLASTN and return the top matches."""
     url = "https://blast.ncbi.nlm.nih.gov/Blast.cgi"
     headers = {"User-Agent": "GenomeZ/1.0"}
 
@@ -56,7 +56,6 @@ def identify_sequence(sequence):
             return {"error": str(exc), "rid": rid, "hits": [], "message": ""}
 
         xml = result.text
-
         if "Status=WAITING" in xml:
             continue
 
@@ -78,14 +77,12 @@ def identify_sequence(sequence):
                         2,
                     )
 
-            hits.append(
-                {
-                    "accession": accession.group(1) if accession else "",
-                    "title": title.group(1) if title else "",
-                    "identity": identity_pct,
-                    "evalue": evalue.group(1) if evalue else "",
-                }
-            )
+            hits.append({
+                "accession": accession.group(1) if accession else "",
+                "title": title.group(1) if title else "",
+                "identity": identity_pct,
+                "evalue": evalue.group(1) if evalue else "",
+            })
 
         return {
             "error": None,
