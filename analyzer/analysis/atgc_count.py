@@ -1,11 +1,4 @@
-"""
-GenomeZ
-ATGC Count Module
-"""
-
-
 def atgc_count(sequence):
-
     sequence = sequence.upper()
 
     return {
