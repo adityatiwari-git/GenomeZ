@@ -16,5 +16,10 @@ RNA_COMPLEMENT = {
 def complement(sequence, sequence_type):
     """Return the complement of a DNA or RNA sequence."""
     sequence = sequence.upper()
-    mapping = DNA_COMPLEMENT if sequence_type == "DNA" else RNA_COMPLEMENT
-    return "".join(mapping[base] for base in sequence)
+
+    if sequence_type == "DNA":
+        bases = DNA_COMPLEMENT
+    else:
+        bases = RNA_COMPLEMENT
+
+    return "".join(bases[base] for base in sequence)
