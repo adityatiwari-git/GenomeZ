@@ -99,3 +99,24 @@ class AnalyzerTests(TestCase):
         self.assertEqual(result[0]["start"], 4)
         self.assertEqual(result[0]["end"], 12)
         self.assertEqual(result[0]["frame"], 1)
+
+    def test_motif_discovery(self):
+        from .analysis.motif import discover_motifs
+
+        result = discover_motifs("ATGCCATGAAATG", 3, 3, 2)
+        motifs = {item["motif"]: item for item in result}
+
+        self.assertIn("ATG", motifs)
+        self.assertEqual(motifs["ATG"]["matches"], 3)
+        self.assertEqual(motifs["ATG"]["positions"], [1, 6, 11])
+
+    def test_motif_discovery_includes_overlapping_matches(self):
+        from .analysis.motif import discover_motifs
+
+        result = discover_motifs("ATATAT", 3, 3, 2)
+        motifs = {item["motif"]: item for item in result}
+
+        self.assertEqual(motifs["ATA"]["matches"], 2)
+        self.assertEqual(motifs["ATA"]["positions"], [1, 3])
+        self.assertEqual(motifs["TAT"]["matches"], 2)
+        self.assertEqual(motifs["TAT"]["positions"], [2, 4])
