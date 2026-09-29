@@ -4,9 +4,10 @@ def find_motif(sequence, motif):
     motif = motif.upper()
     positions = []
 
-    for i in range(len(sequence) - len(motif) + 1):
-        if sequence[i:i + len(motif)] == motif:
-            positions.append(i + 1)
+    # Move one base at a time so overlapping matches are also found.
+    for index in range(len(sequence) - len(motif) + 1):
+        if sequence[index:index + len(motif)] == motif:
+            positions.append(index + 1)
 
     return {
         "Motif": motif,
