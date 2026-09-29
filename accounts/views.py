@@ -1,5 +1,4 @@
-from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import redirect, render
@@ -21,7 +20,11 @@ def login_view(request):
     else:
         form = AuthenticationForm(request)
 
-    return render(request, "accounts/login.html", {"form": form, "next": next_url})
+    return render(
+        request,
+        "accounts/login.html",
+        {"form": form, "next": next_url},
+    )
 
 
 def signup_view(request):
