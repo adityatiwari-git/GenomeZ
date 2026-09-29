@@ -965,7 +965,6 @@
     }
 }
 
-
 /* ===========================
    COMPACT GENOMICS WORKSPACE
 =========================== */
@@ -1114,7 +1113,6 @@
     }
 }
 
-
 /* Analysis-first genomics layout */
 .compact-summary-after{
     margin-top:18px;
@@ -1130,7 +1128,6 @@
         grid-template-columns:1fr;
     }
 }
-
 
 /* ===========================
    PREMIUM TOOL ACCESS
@@ -1185,7 +1182,6 @@
 .premium-login-note a:hover{
     text-decoration:underline;
 }
-
 
 /* Authentication */
 .auth-page{
@@ -1353,5 +1349,3 @@
 .auth-user-label i{
     color:#2563eb;
 }
-
-
