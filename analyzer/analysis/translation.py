@@ -24,12 +24,13 @@ def translate(sequence, sequence_type):
     """Translate a DNA or RNA sequence from its first start codon."""
     sequence = sequence.upper()
 
+    # The codon table uses RNA bases, so convert DNA first.
     if sequence_type == "DNA":
         sequence = sequence.replace("T", "U")
 
-    start = sequence.find("AUG")
+    start_index = sequence.find("AUG")
 
-    if start == -1:
+    if start_index == -1:
         return {
             "Protein": "",
             "Codons": 0,
@@ -41,16 +42,16 @@ def translate(sequence, sequence_type):
     codons_processed = 0
     stop_found = False
 
-    for i in range(start, len(sequence) - 2, 3):
-        codon = sequence[i:i + 3]
-        amino = CODON_TABLE.get(codon, "X")
+    for index in range(start_index, len(sequence) - 2, 3):
+        codon = sequence[index:index + 3]
+        amino_acid = CODON_TABLE.get(codon, "X")
         codons_processed += 1
 
-        if amino == "*":
+        if amino_acid == "*":
             stop_found = True
             break
 
-        protein.append(amino)
+        protein.append(amino_acid)
 
     return {
         "Protein": "".join(protein),
