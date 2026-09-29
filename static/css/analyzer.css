@@ -1130,6 +1130,109 @@
 }
 
 /* ===========================
+   MOTIF DISCOVERY
+=========================== */
+
+.motif-controls{
+    margin-top:14px;
+    padding:12px;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    background:#f8fbff;
+}
+
+.motif-mode-tabs{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+.motif-mode-tabs label{
+    position:relative;
+    cursor:pointer;
+}
+
+.motif-mode-tabs input{
+    position:absolute;
+    opacity:0;
+    pointer-events:none;
+}
+
+.motif-mode-tabs span{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+    padding:9px 11px;
+    border:1px solid #dbe5f0;
+    border-radius:10px;
+    background:#fff;
+    color:#475569;
+    font-size:12px;
+    font-weight:700;
+    transition:.2s ease;
+}
+
+.motif-mode-tabs label:has(input:checked) span{
+    border-color:#93c5fd;
+    background:#eff6ff;
+    color:#1d4ed8;
+}
+
+.motif-discovery-settings{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:10px;
+}
+
+.motif-setting label{
+    display:block;
+    margin-bottom:5px;
+    color:#64748b;
+    font-size:11px;
+    font-weight:700;
+}
+
+.motif-setting input{
+    width:100%;
+    min-height:37px;
+    padding:7px 9px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    background:#fff;
+    color:#172033;
+    font-size:12px;
+}
+
+.motif-specific-input{
+    margin-top:10px;
+}
+
+.motif-specific-input.hidden,
+.motif-discovery-settings.hidden{
+    display:none;
+}
+
+.motif-help{
+    margin:9px 0 0;
+    color:#64748b;
+    font-size:11px;
+    line-height:1.5;
+}
+
+.compact-upload-row{
+    display:flex;
+    justify-content:flex-start;
+    margin-top:12px;
+}
+
+@media(max-width:600px){
+    .motif-discovery-settings{
+        grid-template-columns:1fr;
+    }
+}
+
+/* ===========================
    PREMIUM TOOL ACCESS
 =========================== */
 
