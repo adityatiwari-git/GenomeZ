@@ -865,7 +865,7 @@ This repository has its own GitHub Actions maintenance workflow. It is **reposit
 - `.github/maintenance/schedule.json` — stores this repository's assigned dates and task names.
 - `.github/maintenance/run_task.py` — contains the simple, predefined task logic.
 
-The workflow runs at **09:00 IST (03:30 UTC)** and can also be started manually from the Actions tab.
+The workflow runs at varied scheduled times defined in this repository's maintenance schedule and can also be started manually from the Actions tab.
 
 Assigned October 2026 dates:
 - 2026-10-08
