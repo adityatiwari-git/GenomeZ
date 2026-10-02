@@ -1,0 +1,56 @@
+name: GenomeZ Daily Development Agent
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 3 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  daily-agent:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Run Claude Code
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            You are the GenomeZ daily development agent.
+
+            Read CLAUDE.md and schedule.json first.
+
+            Determine today's date in the workflow environment and load today's scheduled task.
+            If there is no task for today, stop without changing files and without opening a PR.
+
+            For today's task:
+            1. Inspect the repository structure, relevant source files, tests, README, and recent git history.
+            2. Work only within the allowed paths from today's schedule.
+            3. Decide whether a meaningful improvement is actually justified by the current implementation.
+            4. If yes, implement the smallest maintainable change.
+            5. Add or update focused tests when appropriate.
+            6. Run the relevant Django tests/checks.
+            7. Inspect git diff and remove anything unrelated.
+            8. If tests fail because of your change, fix the issue or revert the change.
+            9. If there is no meaningful improvement, leave the repository unchanged and do not create a PR.
+            10. If the change is valid, create a new branch and open a pull request against master.
+
+            Never merge the PR.
+            Never create a change solely to produce a commit or contribution activity.
+            Do not modify secrets, credentials, environment files, or unrelated deployment configuration.
+
+            PR title and description must describe the actual engineering change. Do not mention daily automation, contribution graphs, green squares, this chat, or token usage.
+
+          claude_args: |
+            --max-turns 15
+            --allowedTools "Edit,Read,Write,Bash(python:*),Bash(python3:*),Bash(./.venv/*),Bash(git:*),Bash(pip:*),Bash(find:*),Bash(ls:*)"
