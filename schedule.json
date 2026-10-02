@@ -1,0 +1,16 @@
+{
+  "2026-10-03": {
+    "task": "Review the Genomics sequence-validation workflow and improve one genuine usability, validation, or code-quality issue that can be supported by the existing implementation. Preserve existing functionality and add or update focused tests if the behavior changes.",
+    "allowed_paths": [
+      "analyzer/",
+      "README.md"
+    ],
+    "acceptance": [
+      "Existing analyzer behavior remains intact except for the specific justified improvement.",
+      "The change is small and directly related to sequence validation or its user-facing handling.",
+      "Relevant Django tests pass.",
+      "No unrelated files are modified.",
+      "If no meaningful improvement can be identified, make no changes and do not open a PR."
+    ]
+  }
+}
