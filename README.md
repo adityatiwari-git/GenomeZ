@@ -880,3 +880,7 @@ The important rule is:
 > **No meaningful change = no commit and no pull request.**
 
 The workflow does not use Claude, OpenAI, or another external AI coding service. It only runs predefined repository-specific maintenance tasks, checks the result, and creates a draft PR when an actual change was made.
+
+## Testing Notes
+
+GenomeZ uses the Django test suite to validate existing application behaviour. Run `python manage.py check` for Django configuration checks and `python manage.py test` to run the automated tests before submitting changes.
