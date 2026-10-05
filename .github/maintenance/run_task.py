@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """Run the small, predefined maintenance task scheduled for this repository."""
 
-from datetime import datetime, timezone
+from datetime import datetime
+from zoneinfo import ZoneInfo
 from pathlib import Path
 import json
 
@@ -58,9 +59,12 @@ def run_task(task_id, description):
     return False
 
 
+IST = ZoneInfo("Asia/Kolkata")
+
+
 def main():
     schedule = json.loads(SCHEDULE_FILE.read_text(encoding="utf-8"))
-    today = datetime.now(timezone.utc).date().isoformat()
+    today = datetime.now(IST).date().isoformat()
     task = schedule.get(today)
 
     if not task:
