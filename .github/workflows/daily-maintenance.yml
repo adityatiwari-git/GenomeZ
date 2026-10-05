@@ -2,11 +2,11 @@ name: Scheduled Project Maintenance
 
 on:
   schedule:
-    - cron: "11 3 * * *"
-    - cron: "37 7 * * *"
-    - cron: "58 11 * * *"
-    - cron: "21 15 * * *"
-    - cron: "49 18 * * *"
+    - cron: "11 3 5 10 *"
+    - cron: "37 7 11 10 *"
+    - cron: "58 11 17 10 *"
+    - cron: "21 15 24 10 *"
+    - cron: "49 6 28 10 *"
   workflow_dispatch:
 
 permissions:
@@ -47,7 +47,11 @@ jobs:
             python manage.py check
             python manage.py test
           elif [ -f package.json ]; then
-            npm ci
+            if [ -f package-lock.json ]; then
+              npm ci
+            else
+              npm install --no-audit --no-fund
+            fi
             npm run lint --if-present
             npm run build --if-present
           elif [ -f requirements.txt ]; then
