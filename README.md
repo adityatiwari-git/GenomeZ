@@ -868,12 +868,11 @@ This repository has its own GitHub Actions maintenance workflow. It is **reposit
 The workflow runs at varied scheduled times defined in this repository's maintenance schedule and can also be started manually from the Actions tab.
 
 Assigned October 2026 dates:
-- 2026-10-08
-- 2026-10-14
-- 2026-10-19
-- 2026-10-25
-- 2026-10-29
-- 2026-10-30
+- 2026-10-05
+- 2026-10-11
+- 2026-10-17
+- 2026-10-24
+- 2026-10-28
 
 The important rule is:
 
