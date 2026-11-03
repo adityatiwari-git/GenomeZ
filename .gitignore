@@ -3,24 +3,24 @@ __pycache__/
 *.py[cod]
 *.pyo
 
-# Virtual Environment
+# Virtual environments
 .venv/
 venv/
 
-# Database
+# Database and user uploads
 db.sqlite3
-
-# Environment Variables
-.env
-
-# Django
 media/
 
-# VS Code
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Django generated files
+staticfiles/
+
+# Editors and operating systems
 .vscode/
-
-# macOS
+.idea/
 .DS_Store
-
-# Windows
 Thumbs.db
